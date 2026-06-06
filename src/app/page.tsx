@@ -1,65 +1,51 @@
-import Image from "next/image";
+import Hero from '@/components/Hero';
+import TrustSection from '@/components/TrustSection';
+import ServicesCards from '@/components/ServicesCards';
+import Testimonials from '@/components/Testimonials';
+import LeadForm from '@/components/LeadForm';
+import Footer from '@/components/Footer';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="flex-1 flex flex-col items-center w-full overflow-x-hidden relative">
+      {/* Background Decor - Refined organic blobs */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div className="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] rounded-full bg-brand-emerald/15 dark:bg-brand-emerald/5 blur-[140px] animate-pulse-subtle" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 dark:bg-blue-600/5 blur-[140px] animate-pulse-subtle" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-orange-500/5 dark:bg-orange-500/5 blur-[100px]" />
+      </div>
+      
+      <header className="absolute top-0 w-full px-6 py-6 md:px-12 md:py-8 flex justify-between items-center z-50">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-emerald to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-500/30 transition-transform group-hover:scale-110">
+            <span className="text-white font-black text-2xl">H</span>
+          </div>
+          <div className="flex flex-col -gap-1">
+            <span className="font-montserrat font-black text-brand-navy dark:text-white text-xl md:text-2xl tracking-tighter uppercase">Hubly Pro</span>
+            <span className="text-[10px] text-brand-emerald font-bold tracking-[0.2em] uppercase opacity-80">Premium Services</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <ThemeToggle />
+      </header>
+
+      {/* Hero & Services Section - Sidebar Layout */}
+      <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row items-start justify-between pt-32 pb-20 px-6 md:px-12 gap-16 lg:gap-20">
+        <div className="w-full lg:w-[55%] sticky top-32">
+          <Hero />
         </div>
-      </main>
-    </div>
+        <div className="w-full lg:w-[40%] xl:w-[35%]">
+          <ServicesCards />
+        </div>
+      </div>
+
+      <div className="w-full bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm border-y border-slate-200/50 dark:border-slate-800/50">
+        <TrustSection />
+      </div>
+      
+      <Testimonials />
+      <LeadForm />
+      <Footer />
+    </main>
   );
 }
