@@ -22,7 +22,47 @@ const steps = [
   }
 ];
 
-export default function TrustSection() {
+interface TrustStep {
+  title: string;
+  description: string;
+}
+
+interface TrustData {
+  badge?: string;
+  title_part1?: string;
+  title_part2?: string;
+  description?: string;
+  certified_title?: string;
+  certified_desc?: string;
+  steps?: TrustStep[];
+}
+
+interface TrustSectionProps {
+  data?: TrustData;
+}
+
+export default function TrustSection({ data }: TrustSectionProps) {
+  const badge = data?.badge || "Qualidade Homologada";
+  const title_part1 = data?.title_part1 || "POR QUE CONTRATAR";
+  const title_part2 = data?.title_part2 || "VIA HUBLY PRO?";
+  const descriptionText = data?.description || "Diferente de contratar uma empresa direto no escuro, o Hubly Pro é a sua camada de proteção absoluta. Selecionamos apenas a elite do mercado.";
+  const certified_title = data?.certified_title || "Certificado de Homologação";
+  const certified_desc = data?.certified_desc || "Apenas 15% das empresas que aplicam são aprovadas em nosso rigoroso processo de auditoria.";
+
+  const stepIcons = [
+    <Search className="w-6 h-6" key="search" />,
+    <ShieldCheck className="w-6 h-6" key="shield" />,
+    <Zap className="w-6 h-6" key="zap" />
+  ];
+
+  const displaySteps = (data?.steps && data.steps.length === 3) 
+    ? data.steps.map((step, idx) => ({
+        icon: stepIcons[idx] || <ShieldCheck className="w-6 h-6" />,
+        title: step.title,
+        description: step.description
+      }))
+    : steps;
+
   return (
     <section className="py-24 px-6 w-full max-w-7xl mx-auto">
       <div className="bg-slate-950 rounded-[3.5rem] p-8 md:p-20 text-white relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-white/5">
@@ -33,15 +73,15 @@ export default function TrustSection() {
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-emerald/10 text-brand-emerald text-[10px] font-black uppercase tracking-[0.2em] mb-8 border border-brand-emerald/20 backdrop-blur-sm">
-              <BadgeCheck className="w-4 h-4" /> Qualidade Homologada
+              <BadgeCheck className="w-4 h-4" /> {badge}
             </div>
             
             <h2 className="text-4xl md:text-6xl font-montserrat font-black leading-[1.1] mb-8 uppercase tracking-tighter">
-              POR QUE CONTRATAR <br/>VIA <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">HUBLY PRO?</span>
+              {title_part1} <br/>VIA <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">{title_part2}</span>
             </h2>
             
             <p className="text-slate-400 text-base md:text-xl mb-10 leading-relaxed font-medium max-w-lg">
-              Diferente de contratar uma empresa direto no escuro, o <strong className="text-white">Hubly Pro</strong> é a sua camada de proteção absoluta. Selecionamos apenas a elite do mercado.
+              {descriptionText}
             </p>
 
             <motion.div 
@@ -52,14 +92,14 @@ export default function TrustSection() {
                  <ShieldCheck className="w-8 h-8 text-white" />
                </div>
                <div>
-                 <p className="text-sm md:text-base font-black uppercase tracking-wider mb-1">Certificado de Homologação</p>
-                 <p className="text-xs text-slate-400 font-medium">Apenas <span className="text-brand-emerald font-bold">15% das empresas</span> que aplicam são aprovadas em nosso rigoroso processo de auditoria.</p>
+                 <p className="text-sm md:text-base font-black uppercase tracking-wider mb-1">{certified_title}</p>
+                 <p className="text-xs text-slate-400 font-medium">{certified_desc}</p>
                </div>
             </motion.div>
           </div>
 
           <div className="grid gap-6">
-            {steps.map((step, index) => (
+            {displaySteps.map((step, index) => (
               <motion.div 
                 key={index}
                 initial={{ opacity: 0, y: 20 }}

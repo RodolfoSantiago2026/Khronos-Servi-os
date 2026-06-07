@@ -4,7 +4,27 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Users, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
 
-export default function Hero() {
+interface HeroProps {
+  data?: {
+    badge?: string;
+    title_part1?: string;
+    title_part2?: string;
+    title_part3?: string;
+    description?: string;
+    cta_text?: string;
+    trust_subtitle?: string;
+  };
+}
+
+export default function Hero({ data }: HeroProps) {
+  const badge = data?.badge || "Hub de Empresas 100% Homologadas";
+  const title_part1 = data?.title_part1 || "CONTRATE COM";
+  const title_part2 = data?.title_part2 || "SEGURANÇA";
+  const title_part3 = data?.title_part3 || "E ECONOMIA";
+  const description = data?.description || "O Hubly Pro conecta você apenas às melhores empresas de energia solar e conforto térmico. Parceiros auditados com garantia de qualidade total.";
+  const cta_text = data?.cta_text || "Solicitar Orçamento Grátis";
+  const trust_subtitle = data?.trust_subtitle || "Clientes satisfeitos em SC";
+
   return (
     <div className="relative w-full flex flex-col items-center lg:items-start text-center lg:text-left">
       <motion.div
@@ -14,23 +34,23 @@ export default function Hero() {
         className="w-full"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-emerald/10 text-brand-emerald text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] mb-8 border border-brand-emerald/20 shadow-sm backdrop-blur-md animate-float">
-          <ShieldCheck className="w-4 h-4" /> Hub de Empresas 100% Homologadas
+          <ShieldCheck className="w-4 h-4" /> {badge}
         </div>
 
         <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-montserrat font-black text-brand-navy dark:text-slate-100 leading-[0.95] mb-8 uppercase tracking-tighter">
-          CONTRATE COM <br className="hidden lg:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">SEGURANÇA</span> <br className="hidden lg:block" />
-          E ECONOMIA
+          {title_part1} <br className="hidden lg:block" />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">{title_part2}</span> <br className="hidden lg:block" />
+          {title_part3}
         </h1>
 
         <p className="text-base md:text-xl text-slate-600 dark:text-slate-400 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-          O <strong className="text-brand-navy dark:text-white">Hubly Pro</strong> conecta você apenas às melhores empresas de energia solar e conforto térmico. Parceiros auditados com <span className="text-brand-emerald font-bold">garantia de qualidade total</span>.
+          {description}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 mb-12">
           <button className="group relative w-full sm:w-auto bg-brand-orange text-white font-black py-5 px-12 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all hover:scale-105 active:scale-95 text-base md:text-lg uppercase tracking-widest flex items-center justify-center gap-3 overflow-hidden">
              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shine" />
-             Solicitar Orçamento Grátis
+             {cta_text}
              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
           
@@ -51,9 +71,10 @@ export default function Hero() {
                 +1k
               </div>
             </div>
-            <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">Clientes satisfeitos em SC</p>
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">{trust_subtitle}</p>
           </div>
         </div>
+
 
         {/* Badges de Confiança - Floating Grid */}
         <div className="grid grid-cols-2 gap-y-6 gap-x-8 w-full max-w-xl pt-10 border-t border-slate-200/50 dark:border-slate-800/50">

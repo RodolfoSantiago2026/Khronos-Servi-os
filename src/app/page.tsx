@@ -5,8 +5,12 @@ import Testimonials from '@/components/Testimonials';
 import LeadForm from '@/components/LeadForm';
 import Footer from '@/components/Footer';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { getAllSiteSettingsAction } from '@/app/actions/settings';
 
-export default function Home() {
+export default async function Home() {
+  const settingsRes = await getAllSiteSettingsAction();
+  const settings = settingsRes.success ? settingsRes.data : null;
+
   return (
     <main className="flex-1 flex flex-col items-center w-full overflow-x-hidden relative">
       {/* Background Decor - Refined organic blobs */}
@@ -32,18 +36,18 @@ export default function Home() {
       {/* Hero & Services Section - Sidebar Layout */}
       <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row items-start justify-between pt-32 pb-20 px-6 md:px-12 gap-16 lg:gap-20">
         <div className="w-full lg:w-[55%] sticky top-32">
-          <Hero />
+          <Hero data={settings?.hero} />
         </div>
         <div className="w-full lg:w-[40%] xl:w-[35%]">
-          <ServicesCards />
+          <ServicesCards data={settings?.services} />
         </div>
       </div>
 
       <div className="w-full bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm border-y border-slate-200/50 dark:border-slate-800/50">
-        <TrustSection />
+        <TrustSection data={settings?.trust} />
       </div>
       
-      <Testimonials />
+      <Testimonials data={settings?.testimonials} />
       <LeadForm />
       <Footer />
     </main>

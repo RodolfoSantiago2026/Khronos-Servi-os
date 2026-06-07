@@ -51,6 +51,16 @@ function SidebarNav() {
       >
         <BarChart className="w-4 h-4" /> Relatórios
       </Link>
+      <Link 
+        href="/admin?tab=editar-site" 
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-all ${
+          tab === 'editar-site' 
+          ? 'bg-brand-emerald text-white shadow-md shadow-emerald-500/10' 
+          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+        }`}
+      >
+        <Settings className="w-4 h-4" /> Editar Site
+      </Link>
     </nav>
   );
 }

@@ -19,7 +19,21 @@ const item = {
   show: { opacity: 1, x: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
 };
 
-export default function ServicesCards() {
+interface ServiceItem {
+  id: string;
+  title: string;
+  image: string;
+  icon: string;
+  href: string;
+}
+
+interface ServicesCardsProps {
+  data?: ServiceItem[];
+}
+
+export default function ServicesCards({ data }: ServicesCardsProps) {
+  const services = data || servicesConfig;
+
   return (
     <section className="w-full relative z-10">
       <motion.div 
@@ -36,7 +50,7 @@ export default function ServicesCards() {
           <div className="w-12 h-1 bg-brand-emerald rounded-full" />
         </div>
 
-        {servicesConfig.map((service, index) => (
+        {services.map((service, index) => (
           <motion.div 
             variants={item}
             key={service.id} 

@@ -76,13 +76,16 @@ const testimonials: Testimonial[] = [
 
 interface TestimonialsProps {
   serviceId?: 'limpeza_solar' | 'instalacao_manutencao' | 'aquecimento_piso';
+  data?: Testimonial[];
 }
 
-export default function Testimonials({ serviceId }: TestimonialsProps) {
+export default function Testimonials({ serviceId, data }: TestimonialsProps) {
+  const allTestimonials = data || testimonials;
+  
   // Filtra depoimentos se o serviceId for passado, caso contrário mostra uma seleção mista
   const filteredTestimonials = serviceId 
-    ? testimonials.filter(t => t.serviceId === serviceId)
-    : testimonials.filter(t => [1, 2, 3].includes(t.id)); // Mostra os 3 principais na home
+    ? allTestimonials.filter(t => t.serviceId === serviceId)
+    : allTestimonials.filter(t => [1, 2, 3].includes(t.id) || allTestimonials.indexOf(t) < 3); // Mostra os 3 principais na home
 
   return (
     <section className="py-24 px-6 w-full max-w-7xl mx-auto z-10 relative">
@@ -94,7 +97,7 @@ export default function Testimonials({ serviceId }: TestimonialsProps) {
         <div className="w-24 h-1.5 bg-brand-orange mx-auto rounded-full mb-6" />
         <p className="text-slate-500 dark:text-slate-400 text-base md:text-xl font-medium max-w-2xl mx-auto">
           {serviceId 
-            ? `Veja a experiência de quem já contratou nosso serviço de ${testimonials.find(t => t.serviceId === serviceId)?.service}.`
+            ? `Veja a experiência de quem já contratou nosso serviço de ${allTestimonials.find(t => t.serviceId === serviceId)?.service || 'nossos parceiros'}.`
             : "São mais de 1.000 clientes e empresas atendidos com excelência em Santa Catarina."}
         </p>
       </div>

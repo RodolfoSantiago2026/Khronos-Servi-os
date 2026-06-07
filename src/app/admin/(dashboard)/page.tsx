@@ -6,6 +6,7 @@ import { env } from '@/config/env';
 import { Lead, LeadStatus } from '@/types';
 import { MessageCircle, Download, Filter, Plus, MoreHorizontal, Search, LayoutGrid, List, X, Clock, Save, Edit3, BarChart } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import AdminCMS from '@/components/AdminCMS';
 
 // Função para formatar SLA (Data de Entrada)
 const timeAgo = (dateStr: string) => {
@@ -203,6 +204,12 @@ function DashboardContent() {
           <p className="text-slate-500 text-sm mt-2">Módulo avançado de relatórios em desenvolvimento.</p>
         </div>
       )}
+
+      {/* Editar Site CMS */}
+      {activeTab === 'editar-site' && (
+        <AdminCMS />
+      )}
+
 
       {/* Gestão de Leads (Dashboard ou Leads) */}
       {(activeTab === 'dashboard' || activeTab === 'leads') && (

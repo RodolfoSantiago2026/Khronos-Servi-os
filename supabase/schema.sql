@@ -42,3 +42,40 @@ CREATE POLICY "Permitir leitura/escrita total apenas para autenticados" ON publi
     FOR ALL TO authenticated
     USING (true)
     WITH CHECK (true);
+
+-- Tabela de Configurações do Site (CMS)
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    key VARCHAR(255) PRIMARY KEY,
+    value JSONB NOT NULL
+);
+
+COMMENT ON TABLE public.site_settings IS 'Tabela que armazena os conteúdos editáveis do site (Hero, Serviços, Depoimentos, etc).';
+
+-- Habilitar RLS para site_settings
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+-- Políticas de Acesso para site_settings
+CREATE POLICY "Permitir leitura pública de configurações" ON public.site_settings
+    FOR SELECT TO public
+    USING (true);
+
+CREATE POLICY "Permitir escrita/leitura total de configurações para autenticados" ON public.site_settings
+    FOR ALL TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Configuração do Bucket de Armazenamento para Fotos (site-assets)
+-- Nota: A criação de buckets e políticas de storage também pode ser feita via painel do Supabase.
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('site-assets', 'site-assets', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Políticas de acesso para o bucket site-assets
+CREATE POLICY "Permitir leitura pública de assets" ON storage.objects
+    FOR SELECT TO public
+    USING (bucket_id = 'site-assets');
+
+CREATE POLICY "Permitir escrita de assets para autenticados" ON storage.objects
+    FOR ALL TO authenticated
+    WITH CHECK (bucket_id = 'site-assets');
+
