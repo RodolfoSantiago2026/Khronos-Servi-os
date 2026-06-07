@@ -84,3 +84,25 @@ CREATE POLICY "Permitir escrita de assets para autenticados" ON storage.objects
     FOR ALL TO authenticated
     WITH CHECK (bucket_id = 'site-assets');
 
+
+-- Tabela de Credenciais de Acesso do Administrador
+CREATE TABLE IF NOT EXISTS public.admin_auth (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.admin_auth IS 'Tabela que armazena o e-mail mestre e senha do administrador (acesso restrito).';
+
+-- Habilitar RLS para admin_auth
+ALTER TABLE public.admin_auth ENABLE ROW LEVEL SECURITY;
+
+-- Nota: Não criamos nenhuma política pública de SELECT.
+-- Apenas administradores autenticados podem ver ou atualizar (via service role no backend).
+
+-- Inserir as credenciais padrão do administrador (rodolfo@khronos.com.br / rod223344)
+INSERT INTO public.admin_auth (email, password)
+VALUES ('rodolfo@khronos.com.br', 'rod223344')
+ON CONFLICT (email) DO NOTHING;
+

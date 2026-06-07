@@ -6,6 +6,7 @@ import { Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ email, password })
       });
 
       if (res.ok) {
@@ -51,16 +52,28 @@ export default function LoginPage() {
             <Lock className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-poppins font-bold text-brand-navy dark:text-slate-100">Área Administrativa</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">Digite a senha configurada no seu arquivo .env para acessar os leads.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">Digite o e-mail mestre e a senha para acessar os leads do CRM.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-mail mestre..."
+              required
+              className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-emerald/50 transition-all shadow-inner"
+            />
+          </div>
+
           <div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Sua senha..."
+              required
               className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-emerald/50 transition-all shadow-inner"
             />
           </div>
@@ -79,3 +92,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

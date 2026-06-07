@@ -7,6 +7,7 @@ import { Lead, LeadStatus } from '@/types';
 import { MessageCircle, Download, Filter, Plus, MoreHorizontal, Search, LayoutGrid, List, X, Clock, Save, Edit3, BarChart, Users, TrendingUp } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import AdminCMS from '@/components/AdminCMS';
+import AdminCredentialsForm from '@/components/AdminCredentialsForm';
 
 // Lista de Serviços Padrão para uso nos formulários do CRM
 const servicesList = [
@@ -307,6 +308,12 @@ function DashboardContent() {
               <p className="text-xs text-slate-500 mt-1">Edite textos e imagens da landing page principal.</p>
             </>
           )}
+          {activeTab === 'configuracoes' && (
+            <>
+              <h1 className="text-xl font-black text-slate-900 tracking-tight">Configurações de Segurança</h1>
+              <p className="text-xs text-slate-500 mt-1">Gerencie as credenciais mestre de acesso do administrador.</p>
+            </>
+          )}
         </div>
 
         {/* Botões Operacionais (Apenas na aba Leads) */}
@@ -510,6 +517,11 @@ function DashboardContent() {
       {/* VIEW: EDITAR SITE CMS */}
       {activeTab === 'editar-site' && (
         <AdminCMS />
+      )}
+
+      {/* VIEW: CONFIGURAÇÕES */}
+      {activeTab === 'configuracoes' && (
+        <AdminCredentialsForm />
       )}
 
       {/* VIEW: GESTÃO OPERACIONAL DE LEADS */}
