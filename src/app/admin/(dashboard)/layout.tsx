@@ -12,7 +12,8 @@ import {
   Search, 
   Bell,
   Menu,
-  ChevronRight
+  ChevronRight,
+  Sun
 } from 'lucide-react';
 import KhronosLogo from '@/components/KhronosLogo';
 
@@ -41,6 +42,16 @@ function SidebarNav() {
         }`}
       >
         <Users className="w-4 h-4" /> Leads
+      </Link>
+      <Link 
+        href="/admin?tab=projetos" 
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-all ${
+          tab === 'projetos' 
+          ? 'bg-brand-emerald text-white shadow-md shadow-brand-emerald/10' 
+          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+        }`}
+      >
+        <Sun className="w-4 h-4" /> Projetos Solares
       </Link>
       <Link 
         href="/admin?tab=relatorios" 

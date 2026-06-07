@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.leads (
     whatsapp VARCHAR(50) NOT NULL,
     localizacao VARCHAR(255) NOT NULL,
     servico VARCHAR(100) NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'Pendente' CHECK (status IN ('Pendente', 'Em Atendimento', 'Concluído', 'Pago', 'Perdido')),
+    status VARCHAR(50) NOT NULL DEFAULT 'Pendente' CHECK (status IN ('Pendente', 'Em Atendimento', 'Concluído', 'Pago', 'Perdido', 'Negócio Fechado')),
     perda_estimada NUMERIC(12, 2) NOT NULL DEFAULT 0.00,
     valor_fechado NUMERIC(12, 2),
     observacoes TEXT,
@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.leads (
     concessionaria VARCHAR(100),
     valor_conta NUMERIC(12, 2),
     valor_proposta NUMERIC(12, 2) DEFAULT 0.00,
+    sistema_kwp NUMERIC(12, 2) DEFAULT 0.00,
     temperatura VARCHAR(20) DEFAULT 'Morno' CHECK (temperatura IN ('Frio', 'Morno', 'Quente')),
     motivo_perda VARCHAR(255),
     data_proximo_contato DATE,
@@ -105,4 +106,177 @@ ALTER TABLE public.admin_auth ENABLE ROW LEVEL SECURITY;
 INSERT INTO public.admin_auth (email, password)
 VALUES ('rodolfo@khronos.com.br', 'rod223344')
 ON CONFLICT (email) DO NOTHING;
+
+
+-- =====================================================================
+-- SEÇÃO ADICIONADA: MÓDULO DE PROJETOS SOLARES E AUTOMACÃO
+-- =====================================================================
+
+-- 1. Criar ENUM para as Etapas do Projeto
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'etapa_projeto') THEN
+        CREATE TYPE public.etapa_projeto AS ENUM (
+            'assinatura_financiamento',
+            'visita_tecnica',
+            'projeto_engenharia',
+            'aprovacao_concessionaria',
+            'suprimentos',
+            'logistica',
+            'instalacao',
+            'homologacao',
+            'startup_pos_venda'
+        );
+    END IF;
+END$$;
+
+-- 2. Criar a Tabela de Projetos Solares
+CREATE TABLE IF NOT EXISTS public.projetos_solares (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    lead_id UUID NOT NULL UNIQUE,
+    etapa_atual public.etapa_projeto NOT NULL DEFAULT 'assinatura_financiamento',
+    proxima_acao TEXT NOT NULL DEFAULT 'Validar documentação do contrato e assinatura',
+    data_inicio TIMESTAMPTZ NOT NULL DEFAULT now(),
+    data_limite_etapa TIMESTAMPTZ,
+    criado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
+    atualizado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT fk_projetos_solares_lead 
+        FOREIGN KEY (lead_id) 
+        REFERENCES public.leads(id) 
+        ON DELETE RESTRICT
+);
+
+COMMENT ON TABLE public.projetos_solares IS 'Tabela que gerencia o fluxo pós-venda de projetos solares integrados aos leads.';
+
+-- 3. Criar a Tabela de Histórico de Projetos (Logs de Auditoria e Anotações)
+CREATE TABLE IF NOT EXISTS public.historico_projetos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    projeto_id UUID NOT NULL,
+    etapa_anterior public.etapa_projeto,
+    etapa_nova public.etapa_projeto NOT NULL,
+    anotacao TEXT,
+    criado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT fk_historico_projetos_projeto 
+        FOREIGN KEY (projeto_id) 
+        REFERENCES public.projetos_solares(id) 
+        ON DELETE CASCADE
+);
+
+COMMENT ON TABLE public.historico_projetos IS 'Tabela de log de auditoria cronológica das mudanças de etapas e notas dos projetos.';
+
+-- 4. Otimização e Índices
+CREATE INDEX IF NOT EXISTS projetos_solares_etapa_atual_idx ON public.projetos_solares (etapa_atual);
+CREATE INDEX IF NOT EXISTS projetos_solares_data_limite_etapa_idx ON public.projetos_solares (data_limite_etapa) WHERE data_limite_etapa IS NOT NULL;
+CREATE INDEX IF NOT EXISTS historico_projetos_projeto_id_idx ON public.historico_projetos (projeto_id);
+CREATE INDEX IF NOT EXISTS historico_projetos_criado_em_desc_idx ON public.historico_projetos (criado_em DESC);
+
+-- 5. Habilitar RLS para novas tabelas
+ALTER TABLE public.projetos_solares ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.historico_projetos ENABLE ROW LEVEL SECURITY;
+
+-- 6. Políticas de RLS
+DROP POLICY IF EXISTS "Permitir acesso completo a projetos para autenticados" ON public.projetos_solares;
+CREATE POLICY "Permitir acesso completo a projetos para autenticados" 
+    ON public.projetos_solares FOR ALL 
+    TO authenticated 
+    USING (true) 
+    WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Permitir acesso completo a histórico para autenticados" ON public.historico_projetos;
+CREATE POLICY "Permitir acesso completo a histórico para autenticados" 
+    ON public.historico_projetos FOR ALL 
+    TO authenticated 
+    USING (true) 
+    WITH CHECK (true);
+
+-- 7. Trigger para atualização da coluna atualizado_em
+CREATE OR REPLACE FUNCTION public.set_atualizado_em()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.atualizado_em = now();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_projetos_solares_atualizado_em ON public.projetos_solares;
+CREATE TRIGGER trg_projetos_solares_atualizado_em
+    BEFORE UPDATE ON public.projetos_solares
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_atualizado_em();
+
+-- 8. Trigger para criação automática do Projeto quando Lead é ganho
+CREATE OR REPLACE FUNCTION public.handle_lead_won_auto_project()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (NEW.status IN ('Negócio Fechado', 'Pago', 'Concluído')) 
+       AND (OLD.status IS DISTINCT FROM NEW.status OR OLD.status IS NULL) THEN
+        
+        INSERT INTO public.projetos_solares (
+            lead_id,
+            etapa_atual,
+            proxima_acao,
+            data_limite_etapa
+        )
+        VALUES (
+            NEW.id,
+            'assinatura_financiamento',
+            'Validar documentação do contrato e assinatura',
+            now() + INTERVAL '7 days'
+        )
+        ON CONFLICT (lead_id) DO NOTHING;
+        
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trg_leads_lead_won_create_project ON public.leads;
+CREATE TRIGGER trg_leads_lead_won_create_project
+    AFTER UPDATE ON public.leads
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_lead_won_auto_project();
+
+-- 9. Trigger para gravação automática de histórico
+CREATE OR REPLACE FUNCTION public.log_projeto_etapa_transition()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO public.historico_projetos (
+            projeto_id,
+            etapa_anterior,
+            etapa_nova,
+            anotacao
+        )
+        VALUES (
+            NEW.id,
+            NULL,
+            NEW.etapa_atual,
+            'Projeto solar iniciado automaticamente pelo CRM.'
+        );
+    ELSIF TG_OP = 'UPDATE' AND OLD.etapa_atual IS DISTINCT FROM NEW.etapa_atual THEN
+        INSERT INTO public.historico_projetos (
+            projeto_id,
+            etapa_anterior,
+            etapa_nova,
+            anotacao
+        )
+        VALUES (
+            NEW.id,
+            OLD.etapa_atual,
+            NEW.etapa_atual,
+            COALESCE('Transicionado para a etapa: ' || NEW.etapa_atual || '. Próxima ação definida: ' || NEW.proxima_acao, 'Mudança de etapa.')
+        );
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trg_projetos_solares_log_etapa ON public.projetos_solares;
+CREATE TRIGGER trg_projetos_solares_log_etapa
+    AFTER INSERT OR UPDATE ON public.projetos_solares
+    FOR EACH ROW
+    EXECUTE FUNCTION public.log_projeto_etapa_transition();
+
 

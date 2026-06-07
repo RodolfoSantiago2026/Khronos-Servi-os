@@ -8,6 +8,7 @@ import { MessageCircle, Download, Filter, Plus, MoreHorizontal, Search, LayoutGr
 import { useSearchParams } from 'next/navigation';
 import AdminCMS from '@/components/AdminCMS';
 import AdminCredentialsForm from '@/components/AdminCredentialsForm';
+import SolarProjectsBoard from '@/components/SolarProjectsBoard';
 
 // Lista de Serviços Padrão para uso nos formulários do CRM
 const servicesList = [
@@ -302,6 +303,12 @@ function DashboardContent() {
               <p className="text-xs text-slate-500 mt-1">Exportação de dados e relatórios de auditoria.</p>
             </>
           )}
+          {activeTab === 'projetos' && (
+            <>
+              <h1 className="text-xl font-black text-slate-900 tracking-tight">Gerenciamento de Obras Solares</h1>
+              <p className="text-xs text-slate-500 mt-1">Acompanhe e controle cada etapa física e documental do pós-venda solar.</p>
+            </>
+          )}
           {activeTab === 'editar-site' && (
             <>
               <h1 className="text-xl font-black text-slate-900 tracking-tight">Gerenciador de Conteúdo (CMS)</h1>
@@ -517,6 +524,11 @@ function DashboardContent() {
       {/* VIEW: EDITAR SITE CMS */}
       {activeTab === 'editar-site' && (
         <AdminCMS />
+      )}
+
+      {/* VIEW: PROJETOS SOLARES */}
+      {activeTab === 'projetos' && (
+        <SolarProjectsBoard />
       )}
 
       {/* VIEW: CONFIGURAÇÕES */}
