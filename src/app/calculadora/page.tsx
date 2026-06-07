@@ -55,7 +55,7 @@ export default function CalculadoraPage() {
 
       <TrustSection />
       <Testimonials serviceId="limpeza_solar" />
-      <LeadForm />
+      <LeadForm defaultService="Limpeza Técnica de Placas" />
       <Footer />
     </main>
   );

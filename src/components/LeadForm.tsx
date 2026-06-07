@@ -8,14 +8,18 @@ import { getSiteSettingsAction } from '@/app/actions/settings';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle2 } from 'lucide-react';
 
-export default function LeadForm() {
+interface LeadFormProps {
+  defaultService?: string;
+}
+
+export default function LeadForm({ defaultService }: LeadFormProps) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
     whatsapp: '',
     localizacao: '',
-    servico: servicesConfig[0].title,
+    servico: defaultService || servicesConfig[0].title,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

@@ -88,7 +88,7 @@ export default function InstalacaoPage() {
       </div>
 
       <Testimonials serviceId="instalacao_manutencao" />
-      <LeadForm />
+      <LeadForm defaultService="Instalação e Manutenção" />
       <Footer />
     </main>
   );
