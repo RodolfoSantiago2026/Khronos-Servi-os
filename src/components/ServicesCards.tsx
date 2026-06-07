@@ -32,7 +32,7 @@ interface ServicesCardsProps {
 }
 
 export default function ServicesCards({ data }: ServicesCardsProps) {
-  const services = data || servicesConfig;
+  const services = (data || servicesConfig).filter(s => !(s as any).hidden);
 
   return (
     <section className="w-full relative z-10">
@@ -86,7 +86,9 @@ export default function ServicesCards({ data }: ServicesCardsProps) {
                   <button className="relative group/btn bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-[10px] font-black py-2.5 px-5 rounded-xl transition-all hover:pr-8 active:scale-95 uppercase tracking-widest flex items-center gap-2 overflow-hidden">
                     <span className="relative z-10">
                       {service.id === 'limpeza_solar' ? 'Calcular Perda' : 
-                       service.id === 'instalacao_manutencao' ? 'Instalação' : 'Aquecimento'}
+                       service.id === 'instalacao_manutencao' ? 'Instalação' : 
+                       service.id === 'aquecimento_piso' ? 'Aquecimento' : 
+                       service.id === 'controle_acesso' ? 'Controle' : 'Climatização'}
                     </span>
                     <ChevronRight className="w-3 h-3 absolute right-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                   </button>

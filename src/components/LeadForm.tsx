@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createLeadAction } from '@/app/actions/leads';
 import { env } from '@/config/env';
 import { servicesConfig } from '@/config/services';
@@ -22,6 +22,24 @@ export default function LeadForm({ defaultService }: LeadFormProps) {
     localizacao: '',
     servico: defaultService || servicesConfig[0].title,
   });
+
+  const [services, setServices] = useState<any[]>(servicesConfig);
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const res = await getSiteSettingsAction('services');
+        if (res.success && Array.isArray(res.data)) {
+          setServices(res.data);
+        }
+      } catch (err) {
+        console.error('Erro ao buscar serviços no formulário:', err);
+      }
+    }
+    loadServices();
+  }, []);
+
+  const activeServices = services.filter((s: any) => !s.hidden || s.title === defaultService);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -178,7 +196,7 @@ export default function LeadForm({ defaultService }: LeadFormProps) {
                   onChange={handleChange}
                   className="w-full p-4 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium dark:text-white focus:outline-none focus:border-brand-emerald focus:ring-4 focus:ring-brand-emerald/10 transition-all shadow-inner appearance-none cursor-pointer"
                 >
-                  {servicesConfig.map(s => (
+                  {activeServices.map(s => (
                     <option key={s.id} value={s.title}>{s.title}</option>
                   ))}
                 </select>

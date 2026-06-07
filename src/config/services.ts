@@ -19,5 +19,19 @@ export const servicesConfig = [
     image: '/images/aquecimento.png',
     icon: 'ThermometerSun',
     href: '/aquecimento'
+  },
+  {
+    id: 'controle_acesso',
+    title: 'Controle de Acesso',
+    image: '/images/controle_acesso.png',
+    icon: 'Fingerprint',
+    href: '/controle-acesso'
+  },
+  {
+    id: 'ar_condicionado',
+    title: 'Instalação e Manutenção de Ar Condicionado',
+    image: '/images/ar_condicionado.png',
+    icon: 'Snowflake',
+    href: '/ar-condicionado'
   }
 ];

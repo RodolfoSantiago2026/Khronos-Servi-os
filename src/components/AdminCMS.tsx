@@ -48,7 +48,8 @@ const DEFAULT_SERVICES = [
       'Prevenção de danos permanentes (hotspots)',
       'Uso de água desmineralizada e produtos corretos',
       'Equipe certificada para trabalho em altura (NR35)'
-    ]
+    ],
+    hidden: false
   },
   {
     id: 'instalacao_manutencao',
@@ -64,7 +65,8 @@ const DEFAULT_SERVICES = [
       'Uso de materiais de primeira linha (Tier 1)',
       'Pós-venda e monitoramento ativo pela Hubly Pro',
       'Instalação rápida e com limpeza total'
-    ]
+    ],
+    hidden: false
   },
   {
     id: 'aquecimento_piso',
@@ -80,7 +82,42 @@ const DEFAULT_SERVICES = [
       'Instalação especializada sem sujeira',
       'Controle total via smartphone',
       'Garantia estendida via Hubly Pro'
-    ]
+    ],
+    hidden: false
+  },
+  {
+    id: 'controle_acesso',
+    title: 'Controle de Acesso',
+    image: '/images/controle_acesso.png',
+    icon: 'Fingerprint',
+    href: '/controle-acesso',
+    description: 'Sistemas inteligentes de identificação, biometria e controle de fluxo para condomínios e empresas.',
+    subpage_image: '/images/controle_acesso.png',
+    differentials_title: 'Diferenciais do Serviço:',
+    differentials: [
+      'Reconhecimento facial e biometria de última geração',
+      'Integração com sistemas de segurança e portaria',
+      'Controle de fluxo de pedestres e veículos por aplicativo',
+      'Suporte técnico 24h e manutenção preventiva'
+    ],
+    hidden: false
+  },
+  {
+    id: 'ar_condicionado',
+    title: 'Instalação e Manutenção de Ar Condicionado',
+    image: '/images/ar_condicionado.png',
+    icon: 'Snowflake',
+    href: '/ar-condicionado',
+    description: 'Projetos de climatização residencial e comercial, higienização profissional e carga de gás com garantia.',
+    subpage_image: '/images/ar_condicionado.png',
+    differentials_title: 'Diferenciais do Serviço:',
+    differentials: [
+      'Técnicos certificados e credenciados pelos fabricantes',
+      'Higienização completa para eliminação de fungos e bactérias',
+      'Dimensionamento térmico exato para economia de energia',
+      'Instalação rápida que mantém a garantia de fábrica'
+    ],
+    hidden: false
   }
 ];
 
@@ -192,7 +229,16 @@ export default function AdminCMS() {
       if (res.success && res.data) {
         const data = res.data;
         if (data.hero) setHeroData({ ...DEFAULT_HERO, ...data.hero });
-        if (data.services) setServicesData(data.services);
+        if (data.services) {
+          const dbServices = Array.isArray(data.services) ? data.services : [];
+          const merged = [...dbServices];
+          DEFAULT_SERVICES.forEach(defS => {
+            if (!merged.some(s => s.id === defS.id)) {
+              merged.push(defS);
+            }
+          });
+          setServicesData(merged);
+        }
         if (data.testimonials) setTestimonialsData(data.testimonials);
         if (data.trust) setTrustData({ ...DEFAULT_TRUST, ...data.trust });
         if (data.general) setGeneralData({ ...generalData, ...data.general });
@@ -453,7 +499,22 @@ export default function AdminCMS() {
                     {/* Dados do Serviço */}
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Título do Serviço</label>
+                        <div className="flex justify-between items-center">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Título do Serviço</label>
+                          <label className="inline-flex items-center gap-1.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={service.hidden || false}
+                              onChange={(e) => {
+                                const updated = [...servicesData];
+                                updated[index].hidden = e.target.checked;
+                                setServicesData(updated);
+                              }}
+                              className="w-3.5 h-3.5 text-brand-emerald border-slate-300 rounded focus:ring-brand-emerald"
+                            />
+                            <span className="text-[10px] font-bold text-slate-500 uppercase">Ocultar no site</span>
+                          </label>
+                        </div>
                         <input
                           type="text"
                           value={service.title}
@@ -652,6 +713,8 @@ export default function AdminCMS() {
                           <option value="limpeza_solar">Limpeza Técnica de Placas</option>
                           <option value="instalacao_manutencao">Instalação e Manutenção</option>
                           <option value="aquecimento_piso">Aquecimento de Piso Premium</option>
+                          <option value="controle_acesso">Controle de Acesso</option>
+                          <option value="ar_condicionado">Ar Condicionado</option>
                         </select>
                         
                         <div className="flex items-center gap-1.5">
