@@ -88,6 +88,12 @@ export default function AdminCredentialsForm() {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setErrorMsg("Por favor, insira um endereço de e-mail válido (exemplo@dominio.com).");
+      return;
+    }
+
     if (!currentPassword) {
       setErrorMsg("A senha atual é obrigatória para autorizar qualquer alteração.");
       return;
