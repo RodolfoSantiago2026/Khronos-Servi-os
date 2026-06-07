@@ -12,10 +12,10 @@ import { verifyToken } from '@/lib/auth-token';
 async function verifyAdminSession(): Promise<boolean> {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get('hubly_admin_auth')?.value;
+    const token = cookieStore.get('khronos_admin_auth')?.value;
     if (!token) return false;
     
-    const adminPassword = process.env.ADMIN_PASSWORD || 'hublypro123';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'khronospro123';
     const payload = await verifyToken(token, adminPassword);
     return !!payload && payload.role === 'admin';
   } catch (err) {

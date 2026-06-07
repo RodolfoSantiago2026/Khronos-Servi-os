@@ -112,7 +112,7 @@ export default function LeadForm({ defaultService }: LeadFormProps) {
           <div className="w-20 h-20 bg-brand-emerald rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/20">
             <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-3xl font-montserrat font-black text-brand-navy dark:text-white uppercase mb-4 tracking-tighter">Solicitação Enviada!</h2>
+          <h2 className="text-3xl font-poppins font-black text-brand-navy dark:text-white uppercase mb-4 tracking-tighter">Solicitação Enviada!</h2>
           <p className="text-slate-500 dark:text-slate-400 font-medium">Obrigado, {formData.nome.split(' ')[0]}! Estamos redirecionando você para o nosso WhatsApp para agilizar sua análise técnica.</p>
         </motion.div>
       </section>
@@ -131,12 +131,12 @@ export default function LeadForm({ defaultService }: LeadFormProps) {
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-emerald/5 blur-3xl -z-10" />
         
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-montserrat font-black text-brand-navy dark:text-slate-100 uppercase tracking-tighter leading-tight">
-            SOLICITAR <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">ANÁLISE TÉCNICA</span> GRATUITA
+          <h2 className="text-3xl md:text-4xl font-poppins font-black text-brand-navy dark:text-slate-100 uppercase tracking-tighter leading-tight">
+            SOLICITAR <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand-orange">ANÁLISE TÉCNICA</span> GRATUITA
           </h2>
           <div className="w-16 h-1 bg-brand-emerald mx-auto rounded-full mt-4 mb-6" />
           <p className="text-slate-500 dark:text-slate-400 font-medium text-sm md:text-base">
-            Nossos especialistas do <strong className="text-brand-navy dark:text-white">Hubly Pro</strong> entrarão em contato em até 24h.
+            Nossos especialistas do <strong className="text-brand-navy dark:text-white">Grupo Khronos</strong> entrarão em contato em até 24h.
           </p>
         </div>
 
@@ -227,7 +227,7 @@ export default function LeadForm({ defaultService }: LeadFormProps) {
           </button>
           
           <p className="text-center text-[10px] text-slate-400 mt-6 font-bold uppercase tracking-widest opacity-60">
-            🔒 Seus dados estão 100% seguros com o Hubly Pro
+            🔒 Seus dados estão 100% seguros com o Grupo Khronos
           </p>
         </form>
       </motion.div>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Home } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {
@@ -48,9 +48,9 @@ export default function LoginPage() {
       >
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-brand-emerald/30 to-brand-emerald/10 dark:from-brand-emerald/20 dark:to-transparent text-brand-emerald rounded-2xl flex items-center justify-center mb-4">
-            <Home className="w-8 h-8" />
+            <Lock className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-montserrat font-bold text-brand-navy dark:text-slate-100">Área Administrativa</h1>
+          <h1 className="text-2xl font-poppins font-bold text-brand-navy dark:text-slate-100">Área Administrativa</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">Digite a senha configurada no seu arquivo .env para acessar os leads.</p>
         </div>
 
@@ -70,7 +70,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-navy dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-xl shadow-brand-navy/20 transition-all"
+            className="w-full bg-brand-emerald hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-xl shadow-brand-emerald/20 transition-all cursor-pointer"
           >
             {loading ? 'Entrando...' : 'ACESSAR CRM'}
           </button>

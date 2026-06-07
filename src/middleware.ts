@@ -3,10 +3,10 @@ import type { NextRequest } from 'next/server';
 import { verifyToken } from './lib/auth-token';
 
 export async function middleware(request: NextRequest) {
-  const authCookie = request.cookies.get('hubly_admin_auth');
+  const authCookie = request.cookies.get('khronos_admin_auth');
   const token = authCookie?.value;
   
-  const adminPassword = process.env.ADMIN_PASSWORD || 'hublypro123';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'khronospro123';
   let isAuthenticated = false;
   
   if (token) {
@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
 
     if (!isAuthenticated) {
       const response = NextResponse.redirect(new URL('/admin/login', request.url));
-      response.cookies.delete('hubly_admin_auth');
+      response.cookies.delete('khronos_admin_auth');
       return response;
     }
   }

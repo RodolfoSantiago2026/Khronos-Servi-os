@@ -8,6 +8,7 @@ import LeadForm from '@/components/LeadForm';
 import Footer from '@/components/Footer';
 import SolarCalculatorPortal from '@/components/SolarCalculatorPortal';
 import { getAllSiteSettingsAction } from '@/app/actions/settings';
+import KhronosLogo from '@/components/KhronosLogo';
 
 export default async function InstalacaoPage() {
   const settingsRes = await getAllSiteSettingsAction();
@@ -22,7 +23,7 @@ export default async function InstalacaoPage() {
     differentials: [
       "Projetos assinados por Engenheiros Homologados",
       "Uso de materiais de primeira linha (Tier 1)",
-      "Pós-venda e monitoramento ativo pela Hubly Pro",
+      "Pós-venda e monitoramento ativo pelo Grupo Khronos",
       "Instalação rápida e com limpeza total"
     ]
   };
@@ -38,12 +39,9 @@ export default async function InstalacaoPage() {
       </div>
 
       <header className="absolute top-0 w-full px-4 py-4 md:px-8 md:py-6 flex justify-between items-center z-50">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-brand-emerald rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <span className="text-white font-black text-xl">H</span>
-          </div>
-          <span className="font-montserrat font-black text-brand-navy dark:text-white text-xl tracking-tight">Hubly Pro</span>
-        </div>
+        <Link href="/" className="group cursor-pointer">
+          <KhronosLogo size="sm" />
+        </Link>
         <ThemeToggle />
       </header>
 
@@ -87,7 +85,7 @@ export default async function InstalacaoPage() {
              </div>
           </div>
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-brand-navy dark:text-white uppercase tracking-tight font-montserrat">
+            <h3 className="text-2xl font-bold text-brand-navy dark:text-white uppercase tracking-tight font-poppins">
               {service.differentials_title || 'O que garantimos:'}
             </h3>
             <ul className="space-y-3">

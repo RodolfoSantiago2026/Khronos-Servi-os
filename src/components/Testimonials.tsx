@@ -27,7 +27,7 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 4,
-    text: "O sistema tinha perdido quase 20% de eficiência. Após a limpeza técnica da Hubly Pro, os números voltaram ao normal no mesmo dia. Investimento que se paga muito rápido.",
+    text: "O sistema tinha perdido quase 20% de eficiência. Após a limpeza técnica da Khronos, os números voltaram ao normal no mesmo dia. Investimento que se paga muito rápido.",
     service: "Limpeza Técnica de Placas",
     serviceId: "limpeza_solar",
     name: "Ricardo Mendes",
@@ -37,7 +37,7 @@ const testimonials: Testimonial[] = [
   // Instalação
   {
     id: 2,
-    text: "Instalação impecável. Tudo organizado, cabos bem passados e suporte nota 10. O Hubly Pro realmente seleciona as melhores empresas, me senti muito seguro durante todo o processo.",
+    text: "Instalação impecável. Tudo organizado, cabos bem passados e suporte nota 10. A Khronos realmente seleciona as melhores opções, me senti muito seguro durante todo o processo.",
     service: "Instalação de Energia Solar",
     serviceId: "instalacao_manutencao",
     name: "Mariana Souza",
@@ -46,7 +46,7 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 5,
-    text: "Excelente atendimento do início ao fim. A equipe de instalação foi muito pontual e o sistema está funcionando perfeitamente. O acompanhamento da Hubly faz toda a diferença.",
+    text: "Excelente atendimento do início ao fim. A equipe de instalação foi muito pontual e o sistema está funcionando perfeitamente. O acompanhamento da Khronos faz toda a diferença.",
     service: "Instalação de Energia Solar",
     serviceId: "instalacao_manutencao",
     name: "Felipe Oliveira",
@@ -91,8 +91,8 @@ export default function Testimonials({ serviceId, data }: TestimonialsProps) {
     <section className="py-16 px-6 w-full max-w-7xl mx-auto z-10 relative">
       <div className="text-center mb-12">
 
-        <h2 className="text-3xl md:text-5xl font-montserrat font-black text-brand-navy dark:text-slate-100 mb-6 uppercase tracking-tighter leading-tight">
-          O QUE NOSSOS <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">CLIENTES</span> DIZEM
+        <h2 className="text-3xl md:text-5xl font-poppins font-black text-brand-navy dark:text-slate-100 mb-6 uppercase tracking-tighter leading-tight">
+          O QUE NOSSOS <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand-orange">CLIENTES</span> DIZEM
         </h2>
         <div className="w-24 h-1.5 bg-brand-orange mx-auto rounded-full mb-6" />
         <p className="text-slate-500 dark:text-slate-400 text-base md:text-xl font-medium max-w-2xl mx-auto">

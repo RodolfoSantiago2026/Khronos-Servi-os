@@ -24,11 +24,11 @@ import {
 } from 'lucide-react';
 
 const DEFAULT_HERO = {
-  badge: "Hub de Empresas 100% Homologadas",
+  badge: "Soluções Premium Grupo Khronos",
   title_part1: "CONTRATE COM",
-  title_part2: "SEGURANÇA",
-  title_part3: "E ECONOMIA",
-  description: "O Hubly Pro conecta você apenas às melhores empresas de energia solar e conforto térmico. Parceiros auditados com garantia de qualidade total.",
+  title_part2: "MÁXIMA SEGURANÇA",
+  title_part3: "E TECNOLOGIA",
+  description: "A Khronos conecta você às melhores soluções corporativas de segurança privada, monitoramento 24h, portaria virtual, facilities e climatização.",
   cta_text: "Solicitar Orçamento Grátis",
   trust_subtitle: "Clientes satisfeitos em SC"
 };
@@ -63,7 +63,7 @@ const DEFAULT_SERVICES = [
     differentials: [
       'Projetos assinados por Engenheiros Homologados',
       'Uso de materiais de primeira linha (Tier 1)',
-      'Pós-venda e monitoramento ativo pela Hubly Pro',
+      'Pós-venda e monitoramento ativo pelo Grupo Khronos',
       'Instalação rápida e com limpeza total'
     ],
     hidden: false
@@ -91,14 +91,14 @@ const DEFAULT_SERVICES = [
     image: '/images/aquecimento.png',
     icon: 'ThermometerSun',
     href: '/aquecimento',
-    description: 'O máximo conforto térmico para sua casa com tecnologia de ponta e instalação auditada pela Hubly Pro.',
+    description: 'O máximo conforto térmico para sua casa com tecnologia de ponta e instalação auditada pela Khronos.',
     subpage_image: '/images/aquecimento.png',
     differentials_title: 'Diferenciais do Hub:',
     differentials: [
       'Sistemas de alta eficiência e baixo consumo',
       'Instalação especializada sem sujeira',
       'Controle total via smartphone',
-      'Garantia estendida via Hubly Pro'
+      'Garantia estendida via Khronos'
     ],
     hidden: false
   },
@@ -150,7 +150,7 @@ const DEFAULT_TESTIMONIALS = [
   },
   {
     id: 2,
-    text: "Instalação impecável. Tudo organizado, cabos bem passados e suporte nota 10. O Hubly Pro realmente seleciona as melhores empresas, me senti muito seguro durante todo o processo.",
+    text: "Instalação impecável. Tudo organizado, cabos bem passados e suporte nota 10. A Khronos realmente seleciona as melhores opções, me senti muito seguro durante todo o processo.",
     service: "Instalação de Energia Solar",
     serviceId: "instalacao_manutencao",
     name: "Mariana Souza",
@@ -168,7 +168,7 @@ const DEFAULT_TESTIMONIALS = [
   },
   {
     id: 4,
-    text: "O sistema tinha perdido quase 20% de eficiência. Após a limpeza técnica da Hubly Pro, os números voltaram ao normal no mesmo dia. Investimento que se paga muito rápido.",
+    text: "O sistema tinha perdido quase 20% de eficiência. Após a limpeza técnica da Khronos, os números voltaram ao normal no mesmo dia. Investimento que se paga muito rápido.",
     service: "Limpeza Técnica de Placas",
     serviceId: "limpeza_solar",
     name: "Ricardo Mendes",
@@ -177,7 +177,7 @@ const DEFAULT_TESTIMONIALS = [
   },
   {
     id: 5,
-    text: "Excelente atendimento do início ao fim. A equipe de instalação foi muito pontual e o sistema está funcionando perfeitamente. O acompanhamento da Hubly faz toda a diferença.",
+    text: "Excelente atendimento do início ao fim. A equipe de instalação foi muito pontual e o sistema está funcionando perfeitamente. O acompanhamento da Khronos faz toda a diferença.",
     service: "Instalação de Energia Solar",
     serviceId: "instalacao_manutencao",
     name: "Felipe Oliveira",
@@ -198,10 +198,10 @@ const DEFAULT_TESTIMONIALS = [
 const DEFAULT_TRUST = {
   badge: "Qualidade Homologada",
   title_part1: "POR QUE CONTRATAR",
-  title_part2: "VIA HUBLY PRO?",
-  description: "Diferente de contratar uma empresa direto no escuro, o Hubly Pro é a sua camada de proteção absoluta. Selecionamos apenas a elite do mercado.",
+  title_part2: "GRUPO KHRONOS?",
+  description: "Diferente de contratar um prestador direto no escuro, a Khronos é a sua camada de proteção absoluta. Selecionamos apenas a elite do mercado corporativo.",
   certified_title: "Certificado de Homologação",
-  certified_desc: "Apenas 15% das empresas que aplicam são aprovadas em nosso processo de auditoria.",
+  certified_desc: "Apenas 15% das empresas e prestadores que aplicam são aprovados em nosso processo de auditoria.",
   steps: [
     {
       title: "Triagem Rigorosa",
@@ -209,11 +209,11 @@ const DEFAULT_TRUST = {
     },
     {
       title: "Garantia de Qualidade",
-      description: "A Hubly Pro audita os projetos para garantir que a instalação siga as normas técnicas e de segurança."
+      description: "A Khronos audita os projetos para garantir que a instalação siga as normas técnicas e de segurança de forma corporativa."
     },
     {
       title: "Melhor Negociação",
-      description: "Por sermos um Hub, negociamos em grande volume para garantir o melhor preço para você cliente final."
+      description: "Por ser uma corporação nacional, a Khronos negocia em grande volume para garantir as melhores condições aos clientes."
     }
   ]
 };

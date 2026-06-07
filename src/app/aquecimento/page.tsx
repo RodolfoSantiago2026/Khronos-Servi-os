@@ -6,6 +6,7 @@ import TrustSection from '@/components/TrustSection';
 import Testimonials from '@/components/Testimonials';
 import LeadForm from '@/components/LeadForm';
 import Footer from '@/components/Footer';
+import KhronosLogo from '@/components/KhronosLogo';
 import { getAllSiteSettingsAction } from '@/app/actions/settings';
 
 export default async function AquecimentoPage() {
@@ -14,15 +15,14 @@ export default async function AquecimentoPage() {
   
   // Encontrar a configuração específica para este serviço
   const service = (settings?.services || []).find((s: any) => s.id === 'aquecimento_piso') || {
-    title: 'Aquecimento de Piso Premium',
-    description: 'O máximo conforto térmico para sua casa com tecnologia de ponta e instalação auditada pela Hubly Pro.',
+    description: 'O máximo conforto térmico para sua casa com tecnologia de ponta e instalação auditada pela Khronos.',
     subpage_image: '/images/aquecimento.png',
     differentials_title: 'Diferenciais do Hub:',
     differentials: [
       "Sistemas de alta eficiência e baixo consumo",
       "Instalação especializada sem sujeira",
       "Controle total via smartphone",
-      "Garantia estendida via Hubly Pro"
+      "Garantia estendida via Khronos"
     ]
   };
 
@@ -37,12 +37,9 @@ export default async function AquecimentoPage() {
       </div>
 
       <header className="absolute top-0 w-full px-4 py-4 md:px-8 md:py-6 flex justify-between items-center z-50">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-brand-emerald rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <span className="text-white font-black text-xl">H</span>
-          </div>
-          <span className="font-montserrat font-black text-brand-navy dark:text-white text-xl tracking-tight">Hubly Pro</span>
-        </div>
+        <Link href="/">
+          <KhronosLogo size="sm" />
+        </Link>
         <ThemeToggle />
       </header>
 
@@ -57,9 +54,9 @@ export default async function AquecimentoPage() {
 
         <div className="max-w-4xl text-center mb-0">
            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-emerald/10 text-brand-emerald text-xs font-bold uppercase tracking-widest mb-6 border border-brand-emerald/20 shadow-sm">
-             <ShieldCheck className="w-4 h-4" /> Serviço Homologado Hubly Pro
+             <ShieldCheck className="w-4 h-4" /> Serviço Homologado Khronos
            </div>
-           <h1 className="text-4xl md:text-6xl font-montserrat font-black text-brand-navy dark:text-slate-100 uppercase tracking-tight leading-[1.1]">
+           <h1 className="text-4xl md:text-6xl font-poppins font-black text-brand-navy dark:text-slate-100 uppercase tracking-tight leading-[1.1]">
              {service.title}
            </h1>
            <p className="text-slate-500 dark:text-slate-400 mt-6 text-lg max-w-2xl mx-auto">

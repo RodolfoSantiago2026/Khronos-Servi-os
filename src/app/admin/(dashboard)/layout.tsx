@@ -14,6 +14,7 @@ import {
   Menu,
   ChevronRight
 } from 'lucide-react';
+import KhronosLogo from '@/components/KhronosLogo';
 
 function SidebarNav() {
   const searchParams = useSearchParams();
@@ -25,7 +26,7 @@ function SidebarNav() {
         href="/admin?tab=dashboard" 
         className={`flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-all ${
           tab === 'dashboard'
-          ? 'bg-brand-emerald text-white shadow-md shadow-emerald-500/10' 
+          ? 'bg-brand-emerald text-white shadow-md shadow-brand-emerald/10' 
           : 'text-slate-400 hover:text-white hover:bg-slate-800'
         }`}
       >
@@ -35,7 +36,7 @@ function SidebarNav() {
         href="/admin?tab=leads" 
         className={`flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-all ${
           tab === 'leads' 
-          ? 'bg-brand-emerald text-white shadow-md shadow-emerald-500/10' 
+          ? 'bg-brand-emerald text-white shadow-md shadow-brand-emerald/10' 
           : 'text-slate-400 hover:text-white hover:bg-slate-800'
         }`}
       >
@@ -45,7 +46,7 @@ function SidebarNav() {
         href="/admin?tab=relatorios" 
         className={`flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-all ${
           tab === 'relatorios' 
-          ? 'bg-brand-emerald text-white shadow-md shadow-emerald-500/10' 
+          ? 'bg-brand-emerald text-white shadow-md shadow-brand-emerald/10' 
           : 'text-slate-400 hover:text-white hover:bg-slate-800'
         }`}
       >
@@ -55,7 +56,7 @@ function SidebarNav() {
         href="/admin?tab=editar-site" 
         className={`flex items-center gap-3 px-3 py-2.5 rounded-md font-medium text-sm transition-all ${
           tab === 'editar-site' 
-          ? 'bg-brand-emerald text-white shadow-md shadow-emerald-500/10' 
+          ? 'bg-brand-emerald text-white shadow-md shadow-brand-emerald/10' 
           : 'text-slate-400 hover:text-white hover:bg-slate-800'
         }`}
       >
@@ -80,14 +81,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex font-inter text-slate-900">
+    <div className="min-h-screen bg-[#f8fafc] flex font-poppins text-slate-900">
       {/* Sidebar - Estilo Bling/Tiny */}
-      <aside className="w-64 bg-[#0f172a] text-slate-300 flex flex-col hidden lg:flex fixed h-full z-20">
+      <aside className="w-64 bg-[#0F0F0F] text-slate-300 flex flex-col hidden lg:flex fixed h-full z-20">
         <div className="p-6 flex items-center gap-3 bg-[#1e293b]/50">
-          <div className="w-8 h-8 bg-brand-emerald rounded flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <span className="text-white font-bold text-lg">H</span>
-          </div>
-          <span className="font-montserrat font-bold text-white text-lg tracking-tight">Hubly Pro</span>
+          <KhronosLogo size="sm" lightText={true} />
+          <span className="font-poppins font-bold text-slate-400 text-xs tracking-widest uppercase ml-[-4px]">Portal</span>
         </div>
 
         <div className="px-4 py-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
@@ -148,8 +147,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             
             <div className="flex items-center gap-3">
               <div className="hidden md:block text-right">
-                <p className="text-xs font-bold text-slate-900">Hubly Pro</p>
-                <p className="text-[10px] text-slate-500">Plano Pro</p>
+                <p className="text-xs font-bold text-slate-900">Grupo Khronos</p>
+                <p className="text-[10px] text-slate-500">Administrador</p>
               </div>
               <div className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
                 <Users className="w-5 h-5 text-slate-600" />

@@ -5,7 +5,7 @@ import { generateToken } from '@/lib/auth-token';
 export async function POST(request: Request) {
   try {
     const { password } = await request.json();
-    const adminPassword = process.env.ADMIN_PASSWORD || 'hublypro123';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'khronospro123';
 
     if (password === adminPassword) {
       const payload = {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       const token = await generateToken(payload, adminPassword);
       const cookieStore = await cookies();
       
-      cookieStore.set('hubly_admin_auth', token, {
+      cookieStore.set('khronos_admin_auth', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
@@ -35,6 +35,6 @@ export async function POST(request: Request) {
 
 export async function DELETE() {
   const cookieStore = await cookies();
-  cookieStore.delete('hubly_admin_auth');
+  cookieStore.delete('khronos_admin_auth');
   return NextResponse.json({ success: true });
 }

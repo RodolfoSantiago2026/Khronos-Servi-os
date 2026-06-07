@@ -13,12 +13,12 @@ const steps = [
   {
     icon: <ShieldCheck className="w-6 h-6" />,
     title: "Garantia de Qualidade",
-    description: "A Hubly Pro audita os projetos para garantir que a instalação siga as normas técnicas e de segurança."
+    description: "A Khronos audita os projetos para garantir que a instalação siga as normas técnicas e de segurança de forma corporativa."
   },
   {
     icon: <Zap className="w-6 h-6" />,
     title: "Melhor Negociação",
-    description: "Por sermos um Hub, negociamos em grande volume para garantir o melhor preço para você cliente final."
+    description: "Por ser uma corporação nacional, a Khronos negocia em grande volume para garantir as melhores condições aos clientes."
   }
 ];
 
@@ -44,10 +44,10 @@ interface TrustSectionProps {
 export default function TrustSection({ data }: TrustSectionProps) {
   const badge = data?.badge || "Qualidade Homologada";
   const title_part1 = data?.title_part1 || "POR QUE CONTRATAR";
-  const title_part2 = data?.title_part2 || "VIA HUBLY PRO?";
-  const descriptionText = data?.description || "Diferente de contratar uma empresa direto no escuro, o Hubly Pro é a sua camada de proteção absoluta. Selecionamos apenas a elite do mercado.";
+  const title_part2 = data?.title_part2 || "GRUPO KHRONOS?";
+  const descriptionText = data?.description || "Diferente de contratar um prestador direto no escuro, a Khronos é a sua camada de proteção absoluta. Selecionamos apenas a elite do mercado corporativo.";
   const certified_title = data?.certified_title || "Certificado de Homologação";
-  const certified_desc = data?.certified_desc || "Apenas 15% das empresas que aplicam são aprovadas em nosso rigoroso processo de auditoria.";
+  const certified_desc = data?.certified_desc || "Apenas 15% das empresas e prestadores que aplicam são aprovados em nosso rigoroso processo de auditoria.";
 
   const stepIcons = [
     <Search className="w-6 h-6" key="search" />,
@@ -76,8 +76,8 @@ export default function TrustSection({ data }: TrustSectionProps) {
               <BadgeCheck className="w-4 h-4" /> {badge}
             </div>
             
-            <h2 className="text-4xl md:text-6xl font-montserrat font-black leading-[1.1] mb-8 uppercase tracking-tighter">
-              {title_part1} <br/>VIA <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">{title_part2}</span>
+            <h2 className="text-4xl md:text-6xl font-poppins font-black leading-[1.1] mb-8 uppercase tracking-tighter">
+              {title_part1} <br/>VIA <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand-orange">{title_part2}</span>
             </h2>
             
             <p className="text-slate-400 text-base md:text-xl mb-10 leading-relaxed font-medium max-w-lg">

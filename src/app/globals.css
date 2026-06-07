@@ -3,11 +3,11 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-brand-navy: #0F172A;
-  --color-brand-emerald: #10B981;
-  --color-brand-orange: #F97316;
-  --font-inter: var(--font-inter);
-  --font-montserrat: var(--font-montserrat);
+  --color-brand-navy: #0F0F0F;
+  --color-brand-emerald: #CD1C28;
+  --color-brand-orange: #F05A28;
+  --color-brand-red: #CD1C28;
+  --font-poppins: var(--font-poppins);
 
   --animate-shine: shine 3s infinite linear;
   --animate-float: float 6s ease-in-out infinite;
@@ -57,7 +57,7 @@
 }
 
 body {
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
   @apply noise-bg;
 }
 

@@ -17,11 +17,11 @@ interface HeroProps {
 }
 
 export default function Hero({ data }: HeroProps) {
-  const badge = data?.badge || "Hub de Empresas 100% Homologadas";
+  const badge = data?.badge || "Soluções Premium Grupo Khronos";
   const title_part1 = data?.title_part1 || "CONTRATE COM";
-  const title_part2 = data?.title_part2 || "SEGURANÇA";
-  const title_part3 = data?.title_part3 || "E ECONOMIA";
-  const description = data?.description || "O Hubly Pro conecta você apenas às melhores empresas de energia solar e conforto térmico. Parceiros auditados com garantia de qualidade total.";
+  const title_part2 = data?.title_part2 || "MÁXIMA SEGURANÇA";
+  const title_part3 = data?.title_part3 || "E TECNOLOGIA";
+  const description = data?.description || "A Khronos conecta você às melhores soluções corporativas de segurança privada, monitoramento 24h, portaria virtual, facilities e climatização.";
   const cta_text = data?.cta_text || "Solicitar Orçamento Grátis";
   const trust_subtitle = data?.trust_subtitle || "Clientes satisfeitos em SC";
 
@@ -44,9 +44,9 @@ export default function Hero({ data }: HeroProps) {
           <ShieldCheck className="w-4 h-4" /> {badge}
         </div>
 
-        <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-montserrat font-black text-brand-navy dark:text-slate-100 leading-[0.95] mb-8 uppercase tracking-tighter">
+        <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-poppins font-black text-brand-navy dark:text-slate-100 leading-[0.95] mb-8 uppercase tracking-tighter">
           {title_part1} <br className="hidden lg:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-emerald-400">{title_part2}</span> <br className="hidden lg:block" />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand-orange">{title_part2}</span> <br className="hidden lg:block" />
           {title_part3}
         </h1>
 
@@ -89,8 +89,8 @@ export default function Hero({ data }: HeroProps) {
         {/* Badges de Confiança - Floating Grid */}
         <div className="grid grid-cols-2 gap-y-6 gap-x-8 w-full max-w-xl pt-10 border-t border-slate-200/50 dark:border-slate-800/50">
           {[
-            { icon: CheckCircle, text: "Empresas Auditadas" },
-            { icon: CheckCircle, text: "Garantia Hubly Pro" },
+            { icon: CheckCircle, text: "Serviços Homologados" },
+            { icon: CheckCircle, text: "Garantia Khronos" },
             { icon: MapPin, text: "Foco em Santa Catarina" },
             { icon: ShieldCheck, text: "Suporte Pós-Venda" },
           ].map((badge, idx) => (
