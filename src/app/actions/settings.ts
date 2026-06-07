@@ -259,3 +259,26 @@ export async function updateAdminCredentialsAction(currentPassword: string, emai
   }
 }
 
+/**
+ * Verifies if the admin email exists in the database for password recovery.
+ */
+export async function verifyAdminEmailAction(email: string) {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('admin_auth')
+      .select('email')
+      .eq('email', email.trim())
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error verifying admin email:', error);
+      return { success: false, error: 'Erro ao verificar o e-mail no banco.' };
+    }
+
+    return { success: !!data };
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Erro ao processar solicitação.' };
+  }
+}
+
