@@ -27,7 +27,7 @@ async function verifyAdminSession(): Promise<boolean> {
 /**
  * Helper to calculate SLA date based on stage.
  */
-export function calculateStageSLA(stage: ProjectStage): string {
+function calculateStageSLA(stage: ProjectStage): string {
   const now = new Date();
   let days = 5;
   
@@ -68,7 +68,7 @@ export function calculateStageSLA(stage: ProjectStage): string {
 /**
  * Helper to get default next action for a stage.
  */
-export function getDefaultNextAction(stage: ProjectStage): string {
+function getDefaultNextAction(stage: ProjectStage): string {
   switch (stage) {
     case 'assinatura_financiamento':
       return 'Validar documentação do contrato e assinatura';
