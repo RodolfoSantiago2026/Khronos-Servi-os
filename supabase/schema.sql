@@ -177,14 +177,12 @@ ALTER TABLE public.projetos_solares ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.historico_projetos ENABLE ROW LEVEL SECURITY;
 
 -- 6. Políticas de RLS
-DROP POLICY IF EXISTS "Permitir acesso completo a projetos para autenticados" ON public.projetos_solares;
 CREATE POLICY "Permitir acesso completo a projetos para autenticados" 
     ON public.projetos_solares FOR ALL 
     TO authenticated 
     USING (true) 
     WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Permitir acesso completo a histórico para autenticados" ON public.historico_projetos;
 CREATE POLICY "Permitir acesso completo a histórico para autenticados" 
     ON public.historico_projetos FOR ALL 
     TO authenticated 
@@ -200,7 +198,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_projetos_solares_atualizado_em ON public.projetos_solares;
 CREATE TRIGGER trg_projetos_solares_atualizado_em
     BEFORE UPDATE ON public.projetos_solares
     FOR EACH ROW
@@ -232,7 +229,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS trg_leads_lead_won_create_project ON public.leads;
 CREATE TRIGGER trg_leads_lead_won_create_project
     AFTER UPDATE ON public.leads
     FOR EACH ROW
@@ -273,7 +269,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS trg_projetos_solares_log_etapa ON public.projetos_solares;
 CREATE TRIGGER trg_projetos_solares_log_etapa
     AFTER INSERT OR UPDATE ON public.projetos_solares
     FOR EACH ROW
