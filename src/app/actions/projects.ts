@@ -1,7 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { SolarProject, ProjectStage, ProjectHistory } from '@/types';
+import { SolarProject, ProjectStage, ProjectHistory, StatusFinanceiro } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth-token';
@@ -26,6 +26,7 @@ async function verifyAdminSession(): Promise<boolean> {
 
 /**
  * Helper to calculate SLA date based on stage.
+ * Returns an ISO date string with the expected deadline.
  */
 function calculateStageSLA(stage: ProjectStage): string {
   const now = new Date();
@@ -38,23 +39,29 @@ function calculateStageSLA(stage: ProjectStage): string {
     case 'visita_tecnica':
       days = 5;
       break;
+    case 'adequacao_padrao':       // Nova: reforma na caixa do medidor
+      days = 10;
+      break;
     case 'projeto_engenharia':
       days = 10;
       break;
     case 'aprovacao_concessionaria':
       days = 15;
       break;
-    case 'suprimentos':
+    case 'suprimentos_faturamento': // Renomeada: aguardando NF do distribuidor
       days = 7;
       break;
-    case 'logistica':
+    case 'logistica_entrega':       // Renomeada
       days = 5;
       break;
-    case 'instalacao':
+    case 'instalacao_fisica':       // Renomeada
       days = 7;
       break;
-    case 'homologacao':
+    case 'solicitacao_vistoria':    // Renomeada: pedido protocolado na concessionária
       days = 10;
+      break;
+    case 'troca_medidor':           // Nova: aguardando troca do medidor bidirecional
+      days = 15;
       break;
     case 'startup_pos_venda':
       days = 3;
@@ -74,27 +81,31 @@ function getDefaultNextAction(stage: ProjectStage): string {
       return 'Validar documentação do contrato e assinatura';
     case 'visita_tecnica':
       return 'Realizar vistoria técnica no local e emitir laudo';
+    case 'adequacao_padrao':
+      return 'Contratar eletricista para adequação da caixa do medidor conforme normas';
     case 'projeto_engenharia':
-      return 'Elaborar de forma técnica o diagrama unifilar e projeto executivo';
+      return 'Elaborar diagrama unifilar, memorial descritivo e projeto executivo';
     case 'aprovacao_concessionaria':
       return 'Dar entrada na solicitação de parecer de acesso com a concessionária';
-    case 'suprimentos':
-      return 'Emitir faturamento e separar os módulos/inversores do kit';
-    case 'logistica':
-      return 'Coordenar expedição e rastrear entrega dos kits na residência';
-    case 'instalacao':
+    case 'suprimentos_faturamento':
+      return 'Emitir nota fiscal e separar módulos/inversores do kit solar';
+    case 'logistica_entrega':
+      return 'Coordenar expedição e rastrear entrega dos kits na residência do cliente';
+    case 'instalacao_fisica':
       return 'Iniciar fixação dos suportes, passagem de cabeamento e testes elétricos';
-    case 'homologacao':
-      return 'Solicitar vistoria final e troca do medidor de energia bidirecional';
+    case 'solicitacao_vistoria':
+      return 'Protocolar pedido de vistoria final junto à concessionária de energia';
+    case 'troca_medidor':
+      return 'Acompanhar agendamento e troca do medidor bidirecional pela concessionária';
     case 'startup_pos_venda':
-      return 'Fazer o comissionamento técnico e configurar o app de monitoramento do cliente';
+      return 'Comissionar o sistema e configurar o app de monitoramento do cliente';
     default:
       return 'Definir as próximas atividades do projeto';
   }
 }
 
 /**
- * Fetches all solar projects from database.
+ * Fetches all solar projects from database, including new managerial fields.
  */
 export async function getProjectsAction(): Promise<{ success: boolean; data?: SolarProject[]; error?: string }> {
   try {
@@ -120,7 +131,7 @@ export async function getProjectsAction(): Promise<{ success: boolean; data?: So
 }
 
 /**
- * Updates a project's stage (e.g. from Kanban Drag and Drop)
+ * Updates a project's stage (e.g. from Kanban Drag and Drop or table dropdown)
  */
 export async function updateProjectStageAction(
   projectId: string, 
@@ -160,12 +171,18 @@ export async function updateProjectStageAction(
 }
 
 /**
- * Updates project details (next action and limit date) manually.
+ * Updates project row details: proxima_acao, data_limite_etapa,
+ * responsavel_nome, status_financeiro, concessionaria.
  */
 export async function updateProjectDetailsAction(
   projectId: string,
   nextAction: string,
-  limitDate: string
+  limitDate: string,
+  extraFields?: {
+    responsavel_nome?: string;
+    status_financeiro?: StatusFinanceiro;
+    concessionaria?: string;
+  }
 ): Promise<{ success: boolean; data?: SolarProject; error?: string }> {
   try {
     const isAuthenticated = await verifyAdminSession();
@@ -173,12 +190,26 @@ export async function updateProjectDetailsAction(
       return { success: false, error: 'Acesso não autorizado.' };
     }
 
+    const updatePayload: Record<string, any> = {
+      proxima_acao: nextAction,
+      data_limite_etapa: limitDate ? new Date(limitDate).toISOString() : null,
+    };
+
+    if (extraFields) {
+      if (extraFields.responsavel_nome !== undefined) {
+        updatePayload.responsavel_nome = extraFields.responsavel_nome || null;
+      }
+      if (extraFields.status_financeiro !== undefined) {
+        updatePayload.status_financeiro = extraFields.status_financeiro;
+      }
+      if (extraFields.concessionaria !== undefined) {
+        updatePayload.concessionaria = extraFields.concessionaria || null;
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from('projetos_solares')
-      .update({
-        proxima_acao: nextAction,
-        data_limite_etapa: limitDate ? new Date(limitDate).toISOString() : null
-      })
+      .update(updatePayload)
       .eq('id', projectId)
       .select('*, lead:leads(nome, whatsapp, localizacao, sistema_kwp, valor_fechado, valor_proposta)')
       .single();

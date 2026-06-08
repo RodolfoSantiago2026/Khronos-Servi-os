@@ -8,7 +8,7 @@ import {
   getProjectHistoryAction, 
   addProjectNoteAction 
 } from '@/app/actions/projects';
-import { SolarProject, ProjectStage, ProjectHistory } from '@/types';
+import { SolarProject, ProjectStage, ProjectHistory, StatusFinanceiro } from '@/types';
 import { 
   Sun, 
   Search, 
@@ -33,20 +33,48 @@ import {
   ChevronRight,
   HardHat,
   List,
-  LayoutGrid
+  LayoutGrid,
+  Settings,
+  Gauge,
+  Package,
+  ClipboardCheck,
+  RefreshCw,
+  Building2
 } from 'lucide-react';
 
+// ─── Funil de 11 Etapas ───────────────────────────────────────────────────────
 const COLUMNS: { id: ProjectStage; title: string; icon: any; color: string; hoverColor: string }[] = [
-  { id: 'assinatura_financiamento', title: 'Assinatura & Financiamento', icon: FileText, color: 'border-t-blue-500 bg-blue-500/5', hoverColor: 'hover:bg-blue-500/10' },
-  { id: 'visita_tecnica', title: 'Visita Técnica', icon: MapPin, color: 'border-t-indigo-500 bg-indigo-500/5', hoverColor: 'hover:bg-indigo-500/10' },
-  { id: 'projeto_engenharia', title: 'Projeto de Engenharia', icon: Wrench, color: 'border-t-purple-500 bg-purple-500/5', hoverColor: 'hover:bg-purple-500/10' },
-  { id: 'aprovacao_concessionaria', title: 'Aprovação Concessionária', icon: FileCheck2, color: 'border-t-amber-500 bg-amber-500/5', hoverColor: 'hover:bg-amber-500/10' },
-  { id: 'suprimentos', title: 'Suprimentos', icon: Zap, color: 'border-t-orange-500 bg-orange-500/5', hoverColor: 'hover:bg-orange-500/10' },
-  { id: 'logistica', title: 'Logística', icon: Truck, color: 'border-t-sky-500 bg-sky-500/5', hoverColor: 'hover:bg-sky-500/10' },
-  { id: 'instalacao', title: 'Instalação', icon: HardHat, color: 'border-t-teal-500 bg-teal-500/5', hoverColor: 'hover:bg-teal-500/10' },
-  { id: 'homologacao', title: 'Homologação', icon: CheckCircle, color: 'border-t-emerald-500 bg-emerald-500/5', hoverColor: 'hover:bg-emerald-500/10' },
-  { id: 'startup_pos_venda', title: 'Startup & Pós-venda', icon: Sun, color: 'border-t-green-600 bg-green-600/5', hoverColor: 'hover:bg-green-600/10' }
+  { id: 'assinatura_financiamento',  title: 'Assinatura & Financiamento', icon: FileText,      color: 'border-t-blue-500 bg-blue-500/5',    hoverColor: 'hover:bg-blue-500/10'    },
+  { id: 'visita_tecnica',            title: 'Visita Técnica',             icon: MapPin,        color: 'border-t-indigo-500 bg-indigo-500/5', hoverColor: 'hover:bg-indigo-500/10'  },
+  { id: 'adequacao_padrao',          title: 'Adequação do Padrão',        icon: Settings,      color: 'border-t-violet-500 bg-violet-500/5', hoverColor: 'hover:bg-violet-500/10'  },
+  { id: 'projeto_engenharia',        title: 'Projeto de Engenharia',      icon: Wrench,        color: 'border-t-purple-500 bg-purple-500/5', hoverColor: 'hover:bg-purple-500/10'  },
+  { id: 'aprovacao_concessionaria',  title: 'Aprovação Concessionária',   icon: FileCheck2,    color: 'border-t-amber-500 bg-amber-500/5',   hoverColor: 'hover:bg-amber-500/10'   },
+  { id: 'suprimentos_faturamento',   title: 'Suprimentos & Faturamento',  icon: Package,       color: 'border-t-orange-500 bg-orange-500/5', hoverColor: 'hover:bg-orange-500/10'  },
+  { id: 'logistica_entrega',         title: 'Logística & Entrega',        icon: Truck,         color: 'border-t-sky-500 bg-sky-500/5',       hoverColor: 'hover:bg-sky-500/10'     },
+  { id: 'instalacao_fisica',         title: 'Instalação Física',          icon: HardHat,       color: 'border-t-teal-500 bg-teal-500/5',     hoverColor: 'hover:bg-teal-500/10'    },
+  { id: 'solicitacao_vistoria',      title: 'Solicitação de Vistoria',    icon: ClipboardCheck,color: 'border-t-cyan-500 bg-cyan-500/5',      hoverColor: 'hover:bg-cyan-500/10'    },
+  { id: 'troca_medidor',             title: 'Troca do Medidor',           icon: RefreshCw,     color: 'border-t-emerald-500 bg-emerald-500/5',hoverColor: 'hover:bg-emerald-500/10' },
+  { id: 'startup_pos_venda',         title: 'Startup & Pós-venda',        icon: Sun,           color: 'border-t-green-600 bg-green-600/5',   hoverColor: 'hover:bg-green-600/10'   },
 ];
+
+// ─── Badge de Status Financeiro ───────────────────────────────────────────────
+function FinanceiroBadge({ value }: { value?: StatusFinanceiro | string }) {
+  if (!value) return (
+    <span className="inline-flex items-center text-[9px] font-bold px-2 py-1 rounded border bg-slate-100 text-slate-400 border-slate-200">
+      —
+    </span>
+  );
+  const styles: Record<string, string> = {
+    'Liberado': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    'Aprovado': 'bg-blue-50 text-blue-700 border-blue-200',
+    'Pendente': 'bg-amber-50 text-amber-700 border-amber-200',
+  };
+  return (
+    <span className={`inline-flex items-center text-[9px] font-bold px-2 py-1 rounded border ${styles[value] || 'bg-slate-100 text-slate-500 border-slate-200'}`}>
+      {value}
+    </span>
+  );
+}
 
 export default function SolarProjectsBoard() {
   const [projects, setProjects] = useState<SolarProject[]>([]);
@@ -59,8 +87,14 @@ export default function SolarProjectsBoard() {
   // Alternador de Visualização (Planilha por padrão)
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('table');
   
-  // Modificações temporárias da planilha
-  const [tempValues, setTempValues] = useState<Record<string, { proxima_acao: string; data_limite_etapa: string }>>({});
+  // Modificações temporárias da planilha — incluindo novos campos
+  const [tempValues, setTempValues] = useState<Record<string, {
+    proxima_acao: string;
+    data_limite_etapa: string;
+    responsavel_nome: string;
+    status_financeiro: string;
+    concessionaria: string;
+  }>>({});
   const [updatingStages, setUpdatingStages] = useState<Record<string, boolean>>({});
   const [savingRows, setSavingRows] = useState<Record<string, boolean>>({});
 
@@ -137,18 +171,12 @@ export default function SolarProjectsBoard() {
     const projectId = e.dataTransfer.getData('text/plain');
     if (!projectId) return;
 
-    // Achar projeto correspondente
     const projectToMove = projects.find(p => p.id === projectId);
     if (!projectToMove || projectToMove.etapa_atual === targetStage) return;
 
-    // Atualização Otimista no State
     const updatedProjects = projects.map(p => {
       if (p.id === projectId) {
-        return { 
-          ...p, 
-          etapa_atual: targetStage,
-          atualizado_em: new Date().toISOString()
-        };
+        return { ...p, etapa_atual: targetStage, atualizado_em: new Date().toISOString() };
       }
       return p;
     });
@@ -157,11 +185,9 @@ export default function SolarProjectsBoard() {
     try {
       const res = await updateProjectStageAction(projectId, targetStage);
       if (!res.success) {
-        // Reverter em caso de erro
         fetchProjects();
         alert('Erro ao atualizar etapa do projeto: ' + res.error);
       } else {
-        // Atualizar com os dados retornados do banco (incluindo SLA calculado e histórico novo)
         setProjects(prev => prev.map(p => p.id === projectId && res.data ? res.data : p));
       }
     } catch (err: any) {
@@ -177,7 +203,6 @@ export default function SolarProjectsBoard() {
       const res = await updateProjectStageAction(projectId, newStage);
       if (res.success && res.data) {
         setProjects(prev => prev.map(p => p.id === projectId && res.data ? res.data : p));
-        // Limpar alterações temporárias pois a troca de etapa recalcula SLA e Próxima Ação
         setTempValues(prev => {
           const next = { ...prev };
           delete next[projectId];
@@ -193,22 +218,44 @@ export default function SolarProjectsBoard() {
     }
   };
 
+  // Inicializa ou atualiza um campo temporário de uma linha
+  const getOrInitTemp = (proj: SolarProject) => {
+    return tempValues[proj.id] || {
+      proxima_acao:     proj.proxima_acao || '',
+      data_limite_etapa: proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : '',
+      responsavel_nome:  proj.responsavel_nome  || '',
+      status_financeiro: proj.status_financeiro || 'Pendente',
+      concessionaria:    proj.concessionaria    || '',
+    };
+  };
+
   // Alteração dos inputs temporários na planilha
-  const handleTempChange = (projectId: string, field: 'proxima_acao' | 'data_limite_etapa', value: string) => {
+  const handleTempChange = (
+    projectId: string,
+    field: 'proxima_acao' | 'data_limite_etapa' | 'responsavel_nome' | 'status_financeiro' | 'concessionaria',
+    value: string
+  ) => {
     setTempValues(prev => {
-      const project = projects.find(p => p.id === projectId);
-      const currentTemp = prev[projectId] || { 
-        proxima_acao: project?.proxima_acao || '', 
-        data_limite_etapa: project?.data_limite_etapa ? project.data_limite_etapa.substring(0, 16) : '' 
-      };
+      const project = projects.find(p => p.id === projectId)!;
+      const currentTemp = prev[projectId] || getOrInitTemp(project);
       return {
         ...prev,
-        [projectId]: {
-          ...currentTemp,
-          [field]: value
-        }
+        [projectId]: { ...currentTemp, [field]: value }
       };
     });
+  };
+
+  // Verificar se a linha tem modificações
+  const hasRowChanges = (proj: SolarProject): boolean => {
+    const temp = tempValues[proj.id];
+    if (!temp) return false;
+    return (
+      temp.proxima_acao      !== (proj.proxima_acao || '')        ||
+      temp.data_limite_etapa !== (proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : '') ||
+      temp.responsavel_nome  !== (proj.responsavel_nome  || '')   ||
+      temp.status_financeiro !== (proj.status_financeiro || 'Pendente') ||
+      temp.concessionaria    !== (proj.concessionaria    || '')
+    );
   };
 
   // Salvar linha modificada na planilha
@@ -221,12 +268,16 @@ export default function SolarProjectsBoard() {
       const res = await updateProjectDetailsAction(
         projectId,
         temp.proxima_acao,
-        temp.data_limite_etapa
+        temp.data_limite_etapa,
+        {
+          responsavel_nome:  temp.responsavel_nome  || undefined,
+          status_financeiro: temp.status_financeiro as StatusFinanceiro || undefined,
+          concessionaria:    temp.concessionaria    || undefined,
+        }
       );
 
       if (res.success && res.data) {
         setProjects(prev => prev.map(p => p.id === projectId && res.data ? res.data : p));
-        // Limpar temporários salvos
         setTempValues(prev => {
           const next = { ...prev };
           delete next[projectId];
@@ -235,7 +286,6 @@ export default function SolarProjectsBoard() {
         if (selectedProject?.id === projectId) {
           setSelectedProject(res.data);
         }
-        alert('Projeto atualizado com sucesso!');
       } else {
         alert(res.error || 'Erro ao atualizar detalhes.');
       }
@@ -259,10 +309,8 @@ export default function SolarProjectsBoard() {
       );
 
       if (res.success && res.data) {
-        // Atualizar state local
         setProjects(prev => prev.map(p => p.id === selectedProject.id && res.data ? res.data : p));
         setSelectedProject(res.data);
-        // Limpar temporários correspondentes
         setTempValues(prev => {
           const next = { ...prev };
           delete next[selectedProject.id];
@@ -310,30 +358,21 @@ export default function SolarProjectsBoard() {
 
   const getSLABadge = (limitDateStr?: string) => {
     const sla = getSLADiff(limitDateStr);
-    if (!sla) {
-      return (
-        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-slate-100 text-slate-500 border-slate-200">
-          Sem SLA
-        </span>
-      );
-    }
-
-    if (sla.overdue) {
-      return (
-        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-red-50 text-red-600 border-red-200">
-          <AlertCircle className="w-3 h-3" /> Atrasado ({Math.abs(sla.days)}d)
-        </span>
-      );
-    }
-
-    if (sla.days <= 2) {
-      return (
-        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-200 animate-pulse">
-          <Clock className="w-3 h-3" /> Vence em {sla.days}d
-        </span>
-      );
-    }
-
+    if (!sla) return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-slate-100 text-slate-500 border-slate-200">
+        Sem SLA
+      </span>
+    );
+    if (sla.overdue) return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-red-50 text-red-600 border-red-200">
+        <AlertCircle className="w-3 h-3" /> Atrasado ({Math.abs(sla.days)}d)
+      </span>
+    );
+    if (sla.days <= 2) return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-200 animate-pulse">
+        <Clock className="w-3 h-3" /> Vence em {sla.days}d
+      </span>
+    );
     return (
       <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-600 border-emerald-200">
         <Clock className="w-3 h-3" /> No Prazo ({sla.days}d)
@@ -341,33 +380,23 @@ export default function SolarProjectsBoard() {
     );
   };
 
-  // Badge aprimorado para a visualização em formato Planilha
   const getSLABadgeTable = (limitDateStr?: string) => {
     const sla = getSLADiff(limitDateStr);
-    if (!sla) {
-      return (
-        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-slate-100 text-slate-500 border-slate-200">
-          Sem SLA
-        </span>
-      );
-    }
-
-    if (sla.overdue) {
-      return (
-        <span className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-1 rounded border bg-red-50 text-red-600 border-red-200 animate-pulse">
-          <AlertCircle className="w-3.5 h-3.5 text-red-500" /> Atrasado ({Math.abs(sla.days)}d)
-        </span>
-      );
-    }
-
-    if (sla.days <= 2) {
-      return (
-        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-1 rounded border bg-amber-50 text-amber-600 border-amber-200">
-          <Clock className="w-3.5 h-3.5" /> Vence em {sla.days}d
-        </span>
-      );
-    }
-
+    if (!sla) return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-slate-100 text-slate-500 border-slate-200">
+        Sem SLA
+      </span>
+    );
+    if (sla.overdue) return (
+      <span className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-1 rounded border bg-red-50 text-red-600 border-red-200 animate-pulse">
+        <AlertCircle className="w-3.5 h-3.5 text-red-500" /> Atrasado ({Math.abs(sla.days)}d)
+      </span>
+    );
+    if (sla.days <= 2) return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-1 rounded border bg-amber-50 text-amber-600 border-amber-200">
+        <Clock className="w-3.5 h-3.5" /> Vence em {sla.days}d
+      </span>
+    );
     return (
       <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-1 rounded border bg-emerald-50 text-emerald-600 border-emerald-200">
         <Clock className="w-3.5 h-3.5" /> No Prazo ({sla.days}d)
@@ -381,13 +410,20 @@ export default function SolarProjectsBoard() {
     return (
       p.lead?.nome.toLowerCase().includes(searchLower) ||
       p.lead?.whatsapp.includes(searchTerm) ||
-      p.lead?.localizacao.toLowerCase().includes(searchLower)
+      p.lead?.localizacao.toLowerCase().includes(searchLower) ||
+      (p.responsavel_nome?.toLowerCase().includes(searchLower)) ||
+      (p.concessionaria?.toLowerCase().includes(searchLower))
     );
   });
 
   const getStageFriendlyName = (stage: ProjectStage) => {
     const col = COLUMNS.find(c => c.id === stage);
     return col ? col.title : stage;
+  };
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return '—';
+    return new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
   };
 
   return (
@@ -399,7 +435,7 @@ export default function SolarProjectsBoard() {
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             <input 
               type="text" 
-              placeholder="Buscar por cliente, telefone..." 
+              placeholder="Buscar por cliente, responsável, concessionária..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-brand-emerald text-slate-800"
@@ -448,62 +484,63 @@ export default function SolarProjectsBoard() {
           {error}
         </div>
       ) : viewMode === 'table' ? (
-        /* VISUALIZAÇÃO DE PLANILHA */
+        /* ══════════════════════════════════════════════════
+           VISUALIZAÇÃO DE PLANILHA
+           ══════════════════════════════════════════════════ */
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-300">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse" style={{ minWidth: '1300px' }}>
               <thead>
                 <tr className="bg-slate-50/80 text-slate-500 text-[10px] uppercase tracking-[0.1em] border-b border-slate-200">
-                  <th className="px-5 py-4 font-bold">Cliente</th>
-                  <th className="px-5 py-4 font-bold">Sistema / Contrato</th>
-                  <th className="px-5 py-4 font-bold">Etapa Atual</th>
-                  <th className="px-5 py-4 font-bold">Próxima Ação</th>
-                  <th className="px-5 py-4 font-bold">Prazo Limite (SLA)</th>
-                  <th className="px-5 py-4 font-bold">Alerta</th>
-                  <th className="px-5 py-4 font-bold text-center">Ações</th>
+                  <th className="px-4 py-4 font-bold sticky left-0 bg-slate-50/80 z-10 min-w-[180px]">Cliente</th>
+                  <th className="px-4 py-4 font-bold min-w-[120px]">Sistema / Contrato</th>
+                  <th className="px-4 py-4 font-bold min-w-[190px]">Etapa Atual</th>
+                  <th className="px-4 py-4 font-bold min-w-[120px]">Responsável</th>
+                  <th className="px-4 py-4 font-bold min-w-[110px]">Financeiro</th>
+                  <th className="px-4 py-4 font-bold min-w-[120px]">Concessionária</th>
+                  <th className="px-4 py-4 font-bold min-w-[90px]">Início Obra</th>
+                  <th className="px-4 py-4 font-bold min-w-[240px]">Próxima Ação</th>
+                  <th className="px-4 py-4 font-bold min-w-[160px]">Prazo Limite (SLA)</th>
+                  <th className="px-4 py-4 font-bold min-w-[110px]">Alerta</th>
+                  <th className="px-4 py-4 font-bold text-center min-w-[110px]">Ações</th>
                 </tr>
               </thead>
               <tbody className="text-xs divide-y divide-slate-100">
+                {filteredProjects.length === 0 && (
+                  <tr>
+                    <td colSpan={11} className="text-center py-16 text-slate-400 italic text-xs">
+                      Nenhum projeto encontrado.
+                    </td>
+                  </tr>
+                )}
                 {filteredProjects.map((proj) => {
-                  const hasTemp = !!tempValues[proj.id];
-                  const currentTemp = tempValues[proj.id] || {
-                    proxima_acao: proj.proxima_acao || '',
-                    data_limite_etapa: proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : ''
-                  };
-
-                  const isModified = hasTemp && (
-                    currentTemp.proxima_acao !== proj.proxima_acao ||
-                    currentTemp.data_limite_etapa !== (proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : '')
-                  );
-
-                  const slaDiff = getSLADiff(proj.data_limite_etapa);
-                  const isOverdue = slaDiff?.overdue;
+                  const currentTemp = getOrInitTemp(proj);
+                  const isModified  = hasRowChanges(proj);
+                  const slaDiff     = getSLADiff(proj.data_limite_etapa);
+                  const isOverdue   = slaDiff?.overdue;
                   const isUpdatingStage = !!updatingStages[proj.id];
                   const isSavingRow = !!savingRows[proj.id];
 
                   return (
                     <tr 
                       key={proj.id} 
-                      className={`transition-all hover:bg-slate-50/50 ${
-                        isOverdue 
-                          ? 'bg-red-500/[0.015] hover:bg-red-500/[0.03]' 
-                          : ''
-                      }`}
+                      className={`transition-all hover:bg-slate-50/50 ${isOverdue ? 'bg-red-500/[0.015] hover:bg-red-500/[0.03]' : ''}`}
                     >
                       {/* Cliente */}
-                      <td className={`px-5 py-4 min-w-[200px] ${isOverdue ? 'border-l-4 border-l-red-500' : ''}`}>
+                      <td className={`px-4 py-3.5 sticky left-0 bg-white z-[5] ${isOverdue ? 'border-l-4 border-l-red-500' : ''}`}>
                         <div 
-                          className="font-bold text-slate-900 cursor-pointer hover:text-brand-emerald transition-all"
+                          className="font-bold text-slate-900 cursor-pointer hover:text-brand-emerald transition-all truncate max-w-[160px]"
                           onClick={() => handleOpenDetails(proj)}
+                          title={proj.lead?.nome}
                         >
                           {proj.lead?.nome}
                         </div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">{proj.lead?.localizacao}</div>
+                        <div className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[160px]">{proj.lead?.localizacao}</div>
                         <div className="text-[10px] text-slate-400 font-mono">{proj.lead?.whatsapp}</div>
                       </td>
 
                       {/* Sistema / Contrato */}
-                      <td className="px-5 py-4 whitespace-nowrap">
+                      <td className="px-4 py-3.5 whitespace-nowrap">
                         {proj.lead?.sistema_kwp && (
                           <div className="font-semibold text-slate-700 font-mono">
                             {proj.lead.sistema_kwp} kWp
@@ -515,8 +552,8 @@ export default function SolarProjectsBoard() {
                       </td>
 
                       {/* Etapa Atual Dropdown */}
-                      <td className="px-5 py-4">
-                        <div className="relative min-w-[180px]">
+                      <td className="px-4 py-3.5">
+                        <div className="relative">
                           <select
                             value={proj.etapa_atual}
                             disabled={isUpdatingStage}
@@ -533,42 +570,100 @@ export default function SolarProjectsBoard() {
                         </div>
                       </td>
 
+                      {/* Responsável */}
+                      <td className="px-4 py-3.5">
+                        <input
+                          type="text"
+                          value={currentTemp.responsavel_nome}
+                          onChange={(e) => handleTempChange(proj.id, 'responsavel_nome', e.target.value)}
+                          className={`w-full px-2.5 py-1.5 text-[11px] border rounded-lg focus:outline-none focus:border-brand-emerald text-slate-700 font-medium ${
+                            isModified && currentTemp.responsavel_nome !== (proj.responsavel_nome || '') 
+                              ? 'border-amber-300 bg-amber-50/10' 
+                              : 'border-slate-200 bg-slate-50/30'
+                          }`}
+                          placeholder="Nome do responsável..."
+                        />
+                      </td>
+
+                      {/* Status Financeiro */}
+                      <td className="px-4 py-3.5">
+                        <select
+                          value={currentTemp.status_financeiro}
+                          onChange={(e) => handleTempChange(proj.id, 'status_financeiro', e.target.value)}
+                          className={`w-full text-[11px] font-bold rounded-lg px-2 py-1.5 outline-none cursor-pointer border shadow-sm transition-all focus:border-brand-emerald ${
+                            currentTemp.status_financeiro === 'Liberado' 
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                              : currentTemp.status_financeiro === 'Aprovado'
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
+                              : 'bg-amber-50 text-amber-700 border-amber-200'
+                          } ${isModified && currentTemp.status_financeiro !== (proj.status_financeiro || 'Pendente') ? 'ring-2 ring-amber-300' : ''}`}
+                        >
+                          <option value="Pendente">Pendente</option>
+                          <option value="Aprovado">Aprovado</option>
+                          <option value="Liberado">Liberado</option>
+                        </select>
+                      </td>
+
+                      {/* Concessionária */}
+                      <td className="px-4 py-3.5">
+                        <input
+                          type="text"
+                          value={currentTemp.concessionaria}
+                          onChange={(e) => handleTempChange(proj.id, 'concessionaria', e.target.value)}
+                          className={`w-full px-2.5 py-1.5 text-[11px] border rounded-lg focus:outline-none focus:border-brand-emerald text-slate-700 font-medium ${
+                            isModified && currentTemp.concessionaria !== (proj.concessionaria || '') 
+                              ? 'border-amber-300 bg-amber-50/10' 
+                              : 'border-slate-200 bg-slate-50/30'
+                          }`}
+                          placeholder="Ex: Celesc, Cemig..."
+                        />
+                      </td>
+
+                      {/* Início da Obra */}
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <span className="text-[11px] font-semibold text-slate-600">
+                          {formatDate(proj.data_inicio_obra || proj.data_inicio)}
+                        </span>
+                      </td>
+
                       {/* Próxima Ação Input */}
-                      <td className="px-5 py-4 min-w-[250px]">
+                      <td className="px-4 py-3.5">
                         <input
                           type="text"
                           value={currentTemp.proxima_acao}
                           onChange={(e) => handleTempChange(proj.id, 'proxima_acao', e.target.value)}
                           className={`w-full px-2.5 py-1.5 text-[11px] border rounded-lg focus:outline-none focus:border-brand-emerald text-slate-700 font-medium ${
-                            isModified ? 'border-amber-300 bg-amber-50/10' : 'border-slate-200 bg-slate-50/30'
+                            isModified && currentTemp.proxima_acao !== (proj.proxima_acao || '')
+                              ? 'border-amber-300 bg-amber-50/10' 
+                              : 'border-slate-200 bg-slate-50/30'
                           }`}
                           placeholder="Digite a próxima ação..."
                         />
                       </td>
 
                       {/* Data Limite Input */}
-                      <td className="px-5 py-4">
+                      <td className="px-4 py-3.5">
                         <input
                           type="datetime-local"
                           value={currentTemp.data_limite_etapa}
                           onChange={(e) => handleTempChange(proj.id, 'data_limite_etapa', e.target.value)}
                           className={`px-2.5 py-1.5 text-[11px] border rounded-lg focus:outline-none focus:border-brand-emerald font-semibold text-slate-700 bg-white ${
-                            isModified ? 'border-amber-300 bg-amber-50/10' : 'border-slate-200'
+                            isModified && currentTemp.data_limite_etapa !== (proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : '')
+                              ? 'border-amber-300 bg-amber-50/10' 
+                              : 'border-slate-200'
                           }`}
                         />
                       </td>
 
                       {/* Alerta de SLA */}
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {getSLABadgeTable(proj.data_limite_etapa)}
-                        </div>
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        {getSLABadgeTable(proj.data_limite_etapa)}
                       </td>
 
                       {/* Ações */}
-                      <td className="px-5 py-4 text-center">
+                      <td className="px-4 py-3.5 text-center">
                         <div className="flex items-center justify-center gap-1.5">
-                          {/* Botão de Salvar (apenas quando modificado) */}
+                          {/* Botão de Salvar */}
                           <button
                             onClick={() => handleSaveRow(proj.id)}
                             disabled={!isModified || isSavingRow}
@@ -617,7 +712,9 @@ export default function SolarProjectsBoard() {
           </div>
         </div>
       ) : (
-        /* VISUALIZAÇÃO DE QUADRO KANBAN */
+        /* ══════════════════════════════════════════════════
+           VISUALIZAÇÃO DE QUADRO KANBAN (11 colunas)
+           ══════════════════════════════════════════════════ */
         <div className="flex gap-4 overflow-x-auto pb-6 select-none -mx-4 px-4 md:-mx-8 md:px-8">
           {COLUMNS.map(col => {
             const colProjects = filteredProjects.filter(p => p.etapa_atual === col.id);
@@ -625,7 +722,7 @@ export default function SolarProjectsBoard() {
             return (
               <div 
                 key={col.id} 
-                className={`flex-shrink-0 w-80 rounded-xl border-t-4 border border-slate-200 flex flex-col max-h-[75vh] transition-all ${col.color} ${col.hoverColor}`}
+                className={`flex-shrink-0 w-72 rounded-xl border-t-4 border border-slate-200 flex flex-col max-h-[75vh] transition-all ${col.color} ${col.hoverColor}`}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, col.id)}
               >
@@ -636,7 +733,7 @@ export default function SolarProjectsBoard() {
                       <ColIcon className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-[11px] font-black text-slate-800 uppercase tracking-tight truncate max-w-[170px]" title={col.title}>
+                      <h3 className="text-[11px] font-black text-slate-800 uppercase tracking-tight truncate max-w-[150px]" title={col.title}>
                         {col.title}
                       </h3>
                       <p className="text-[9px] text-slate-400 font-semibold">{colProjects.length} {colProjects.length === 1 ? 'obra' : 'obras'}</p>
@@ -645,7 +742,7 @@ export default function SolarProjectsBoard() {
                 </div>
 
                 {/* Área de Cards */}
-                <div className="p-3 overflow-y-auto space-y-3 flex-1 min-h-[450px]">
+                <div className="p-3 overflow-y-auto space-y-3 flex-1 min-h-[400px]">
                   {colProjects.length === 0 ? (
                     <div className="h-full flex items-center justify-center border-2 border-dashed border-slate-300/40 rounded-lg p-6 text-center">
                       <span className="text-[10px] text-slate-400/80 font-medium italic">Solte cards aqui</span>
@@ -684,6 +781,18 @@ export default function SolarProjectsBoard() {
                             </p>
                           </div>
 
+                          {/* Responsável e Financeiro */}
+                          {(proj.responsavel_nome || proj.status_financeiro) && (
+                            <div className="flex items-center gap-2 mb-2">
+                              {proj.responsavel_nome && (
+                                <span className="text-[9px] text-slate-500 flex items-center gap-0.5 truncate">
+                                  <User className="w-3 h-3" /> {proj.responsavel_nome}
+                                </span>
+                              )}
+                              <FinanceiroBadge value={proj.status_financeiro} />
+                            </div>
+                          )}
+
                           {/* Campo Próxima Ação Destacado */}
                           <div className="bg-slate-50 border border-slate-100 rounded-md p-2 my-2 text-left">
                             <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-0.5">Próxima Ação</span>
@@ -692,7 +801,7 @@ export default function SolarProjectsBoard() {
                             </p>
                           </div>
 
-                          {/* Rodapé do Card (Valor e SLA) */}
+                          {/* Rodapé do Card */}
                           <div className="flex justify-between items-center mt-2 pt-2 border-t border-slate-100">
                             <div>
                               <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block">Contrato</span>
@@ -731,9 +840,22 @@ export default function SolarProjectsBoard() {
                     {getStageFriendlyName(selectedProject.etapa_atual)}
                   </span>
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Telefone: {selectedProject.lead?.whatsapp} | Cidade: {selectedProject.lead?.localizacao}
-                </p>
+                <div className="flex flex-wrap items-center gap-3 mt-1.5">
+                  <p className="text-xs text-slate-500">
+                    {selectedProject.lead?.whatsapp} · {selectedProject.lead?.localizacao}
+                  </p>
+                  {selectedProject.concessionaria && (
+                    <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                      <Building2 className="w-3 h-3" /> {selectedProject.concessionaria}
+                    </span>
+                  )}
+                  {selectedProject.responsavel_nome && (
+                    <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                      <User className="w-3 h-3" /> {selectedProject.responsavel_nome}
+                    </span>
+                  )}
+                  <FinanceiroBadge value={selectedProject.status_financeiro} />
+                </div>
               </div>
               <button 
                 onClick={handleCloseDetails}
@@ -745,7 +867,7 @@ export default function SolarProjectsBoard() {
 
             {/* Conteúdo Duas Colunas */}
             <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Coluna Esquerda: Edição do Projeto */}
+              {/* Coluna Esquerda */}
               <div className="space-y-6">
                 <div>
                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
@@ -768,9 +890,23 @@ export default function SolarProjectsBoard() {
                       </div>
                     </div>
 
+                    {/* Início da obra e status financeiro no modal */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1">Início da Obra</span>
+                        <span className="text-sm font-bold text-slate-700">
+                          {formatDate(selectedProject.data_inicio_obra || selectedProject.data_inicio)}
+                        </span>
+                      </div>
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-1">Status Financeiro</span>
+                        <FinanceiroBadge value={selectedProject.status_financeiro} />
+                      </div>
+                    </div>
+
                     <div>
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                        Próxima Ação (Descrição do passo atual)
+                        Próxima Ação
                       </label>
                       <textarea
                         value={editNextAction}
@@ -819,7 +955,7 @@ export default function SolarProjectsBoard() {
                 </div>
               </div>
 
-              {/* Coluna Direita: Histórico e Linha do Tempo */}
+              {/* Coluna Direita: Histórico */}
               <div className="border-t lg:border-t-0 lg:border-l border-slate-100 lg:pl-8 pt-6 lg:pt-0 flex flex-col h-full">
                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
                   <History className="w-4 h-4 text-slate-500" /> Histórico & Logs da Obra
@@ -848,43 +984,30 @@ export default function SolarProjectsBoard() {
                 {/* Timeline Scroll */}
                 <div className="flex-1 overflow-y-auto space-y-4 pr-1 min-h-[300px]">
                   {loadingHistory ? (
-                    <div className="text-center py-8 text-xs text-slate-400">
-                      Carregando logs...
-                    </div>
+                    <div className="text-center py-8 text-xs text-slate-400">Carregando logs...</div>
                   ) : historyLogs.length === 0 ? (
-                    <div className="text-center py-12 text-xs text-slate-400 italic">
-                      Nenhuma anotação registrada ainda.
-                    </div>
+                    <div className="text-center py-12 text-xs text-slate-400 italic">Nenhuma anotação registrada ainda.</div>
                   ) : (
                     <div className="relative border-l border-slate-200 pl-4 ml-2 space-y-5 py-2">
                       {historyLogs.map(log => {
                         const isSystem = log.etapa_anterior !== log.etapa_nova;
                         return (
                           <div key={log.id} className="relative">
-                            {/* Ponto na timeline */}
-                            <span className={`absolute -left-[21px] top-1.5 w-3.5 h-3.5 rounded-full border-2 bg-white flex items-center justify-center ${
-                              isSystem ? 'border-brand-emerald' : 'border-slate-400'
-                            }`}>
-                              <span className={`w-1 h-1 rounded-full ${
-                                isSystem ? 'bg-brand-emerald' : 'bg-slate-400'
-                              }`}></span>
+                            <span className={`absolute -left-[21px] top-1.5 w-3.5 h-3.5 rounded-full border-2 bg-white flex items-center justify-center ${isSystem ? 'border-brand-emerald' : 'border-slate-400'}`}>
+                              <span className={`w-1 h-1 rounded-full ${isSystem ? 'bg-brand-emerald' : 'bg-slate-400'}`}></span>
                             </span>
-
-                            {/* Detalhes do Log */}
                             <div className="text-left space-y-1">
                               <div className="flex justify-between items-center gap-4">
                                 <span className="text-[10px] font-bold text-slate-500">
                                   {new Date(log.criado_em).toLocaleString('pt-BR')}
                                 </span>
                                 {isSystem && log.etapa_nova && (
-                                  <span className="text-[8px] bg-slate-100 border border-slate-200 font-bold px-1.5 py-0.2 rounded text-slate-600">
+                                  <span className="text-[8px] bg-slate-100 border border-slate-200 font-bold px-1.5 py-0.5 rounded text-slate-600">
                                     Mudança de Etapa
                                   </span>
                                 )}
                               </div>
-                              <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                                {log.anotacao}
-                              </p>
+                              <p className="text-xs text-slate-700 font-medium leading-relaxed">{log.anotacao}</p>
                               {log.etapa_anterior && log.etapa_nova && log.etapa_anterior !== log.etapa_nova && (
                                 <div className="text-[9px] text-slate-400 font-semibold flex items-center gap-1">
                                   <span>{getStageFriendlyName(log.etapa_anterior)}</span>

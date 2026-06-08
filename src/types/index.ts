@@ -23,16 +23,25 @@ export interface Lead {
   origem?: string;
 }
 
-export type ProjectStage = 
+/**
+ * Funil de etapas do projeto solar (11 estágios)
+ * Ordem: assinatura → visita → adequação → projeto → aprovação →
+ *        suprimentos → logística → instalação → vistoria → troca medidor → startup
+ */
+export type ProjectStage =
   | 'assinatura_financiamento'
   | 'visita_tecnica'
+  | 'adequacao_padrao'
   | 'projeto_engenharia'
   | 'aprovacao_concessionaria'
-  | 'suprimentos'
-  | 'logistica'
-  | 'instalacao'
-  | 'homologacao'
+  | 'suprimentos_faturamento'
+  | 'logistica_entrega'
+  | 'instalacao_fisica'
+  | 'solicitacao_vistoria'
+  | 'troca_medidor'
   | 'startup_pos_venda';
+
+export type StatusFinanceiro = 'Pendente' | 'Aprovado' | 'Liberado';
 
 export interface SolarProject {
   id: string;
@@ -43,7 +52,13 @@ export interface SolarProject {
   data_limite_etapa?: string;
   criado_em: string;
   atualizado_em: string;
-  
+
+  // Campos gerenciais (novos)
+  responsavel_nome?: string;
+  status_financeiro?: StatusFinanceiro;
+  concessionaria?: string;
+  data_inicio_obra?: string;
+
   // Joined from leads
   lead?: {
     nome: string;
@@ -63,4 +78,3 @@ export interface ProjectHistory {
   anotacao?: string;
   criado_em: string;
 }
-
