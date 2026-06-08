@@ -31,7 +31,9 @@ import {
   FileCheck2, 
   Play, 
   ChevronRight,
-  HardHat
+  HardHat,
+  List,
+  LayoutGrid
 } from 'lucide-react';
 
 const COLUMNS: { id: ProjectStage; title: string; icon: any; color: string; hoverColor: string }[] = [
@@ -54,6 +56,14 @@ export default function SolarProjectsBoard() {
   // Filtros
   const [searchTerm, setSearchTerm] = useState('');
   
+  // Alternador de Visualização (Planilha por padrão)
+  const [viewMode, setViewMode] = useState<'kanban' | 'table'>('table');
+  
+  // Modificações temporárias da planilha
+  const [tempValues, setTempValues] = useState<Record<string, { proxima_acao: string; data_limite_etapa: string }>>({});
+  const [updatingStages, setUpdatingStages] = useState<Record<string, boolean>>({});
+  const [savingRows, setSavingRows] = useState<Record<string, boolean>>({});
+
   // Modal de Detalhes
   const [selectedProject, setSelectedProject] = useState<SolarProject | null>(null);
   const [historyLogs, setHistoryLogs] = useState<ProjectHistory[]>([]);
@@ -61,7 +71,7 @@ export default function SolarProjectsBoard() {
   const [newNote, setNewNote] = useState('');
   const [savingNote, setSavingNote] = useState(false);
   
-  // Campos de Edição de Detalhes
+  // Campos de Edição de Detalhes (Modal)
   const [editNextAction, setEditNextAction] = useState('');
   const [editLimitDate, setEditLimitDate] = useState('');
   const [savingDetails, setSavingDetails] = useState(false);
@@ -160,6 +170,82 @@ export default function SolarProjectsBoard() {
     }
   };
 
+  // Alteração direta da etapa via Dropdown na Planilha
+  const handleStageChange = async (projectId: string, newStage: ProjectStage) => {
+    setUpdatingStages(prev => ({ ...prev, [projectId]: true }));
+    try {
+      const res = await updateProjectStageAction(projectId, newStage);
+      if (res.success && res.data) {
+        setProjects(prev => prev.map(p => p.id === projectId && res.data ? res.data : p));
+        // Limpar alterações temporárias pois a troca de etapa recalcula SLA e Próxima Ação
+        setTempValues(prev => {
+          const next = { ...prev };
+          delete next[projectId];
+          return next;
+        });
+      } else {
+        alert('Erro ao atualizar etapa do projeto: ' + res.error);
+      }
+    } catch (err: any) {
+      alert('Erro ao atualizar etapa: ' + err.message);
+    } finally {
+      setUpdatingStages(prev => ({ ...prev, [projectId]: false }));
+    }
+  };
+
+  // Alteração dos inputs temporários na planilha
+  const handleTempChange = (projectId: string, field: 'proxima_acao' | 'data_limite_etapa', value: string) => {
+    setTempValues(prev => {
+      const project = projects.find(p => p.id === projectId);
+      const currentTemp = prev[projectId] || { 
+        proxima_acao: project?.proxima_acao || '', 
+        data_limite_etapa: project?.data_limite_etapa ? project.data_limite_etapa.substring(0, 16) : '' 
+      };
+      return {
+        ...prev,
+        [projectId]: {
+          ...currentTemp,
+          [field]: value
+        }
+      };
+    });
+  };
+
+  // Salvar linha modificada na planilha
+  const handleSaveRow = async (projectId: string) => {
+    const temp = tempValues[projectId];
+    if (!temp) return;
+
+    setSavingRows(prev => ({ ...prev, [projectId]: true }));
+    try {
+      const res = await updateProjectDetailsAction(
+        projectId,
+        temp.proxima_acao,
+        temp.data_limite_etapa
+      );
+
+      if (res.success && res.data) {
+        setProjects(prev => prev.map(p => p.id === projectId && res.data ? res.data : p));
+        // Limpar temporários salvos
+        setTempValues(prev => {
+          const next = { ...prev };
+          delete next[projectId];
+          return next;
+        });
+        if (selectedProject?.id === projectId) {
+          setSelectedProject(res.data);
+        }
+        alert('Projeto atualizado com sucesso!');
+      } else {
+        alert(res.error || 'Erro ao atualizar detalhes.');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Erro inesperado ao salvar detalhes.');
+    } finally {
+      setSavingRows(prev => ({ ...prev, [projectId]: false }));
+    }
+  };
+
   const handleSaveDetails = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedProject) return;
@@ -176,6 +262,12 @@ export default function SolarProjectsBoard() {
         // Atualizar state local
         setProjects(prev => prev.map(p => p.id === selectedProject.id && res.data ? res.data : p));
         setSelectedProject(res.data);
+        // Limpar temporários correspondentes
+        setTempValues(prev => {
+          const next = { ...prev };
+          delete next[selectedProject.id];
+          return next;
+        });
         alert('Detalhes atualizados com sucesso!');
       } else {
         alert(res.error || 'Erro ao atualizar detalhes.');
@@ -249,6 +341,40 @@ export default function SolarProjectsBoard() {
     );
   };
 
+  // Badge aprimorado para a visualização em formato Planilha
+  const getSLABadgeTable = (limitDateStr?: string) => {
+    const sla = getSLADiff(limitDateStr);
+    if (!sla) {
+      return (
+        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border bg-slate-100 text-slate-500 border-slate-200">
+          Sem SLA
+        </span>
+      );
+    }
+
+    if (sla.overdue) {
+      return (
+        <span className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-1 rounded border bg-red-50 text-red-600 border-red-200 animate-pulse">
+          <AlertCircle className="w-3.5 h-3.5 text-red-500" /> Atrasado ({Math.abs(sla.days)}d)
+        </span>
+      );
+    }
+
+    if (sla.days <= 2) {
+      return (
+        <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-1 rounded border bg-amber-50 text-amber-600 border-amber-200">
+          <Clock className="w-3.5 h-3.5" /> Vence em {sla.days}d
+        </span>
+      );
+    }
+
+    return (
+      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-1 rounded border bg-emerald-50 text-emerald-600 border-emerald-200">
+        <Clock className="w-3.5 h-3.5" /> No Prazo ({sla.days}d)
+      </span>
+    );
+  };
+
   // Filtros aplicados
   const filteredProjects = projects.filter(p => {
     const searchLower = searchTerm.toLowerCase();
@@ -268,23 +394,44 @@ export default function SolarProjectsBoard() {
     <div className="space-y-6">
       {/* Barra de Ações Rápidas */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
-        <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Buscar por cliente, telefone..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-brand-emerald text-slate-800"
-          />
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-80">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Buscar por cliente, telefone..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-brand-emerald text-slate-800"
+            />
+          </div>
+          
+          {/* Alternador de Visualização */}
+          <div className="flex bg-slate-100 rounded-lg p-1 border border-slate-200">
+            <button 
+              onClick={() => setViewMode('table')}
+              className={`px-3 py-1.5 rounded-md text-xs flex items-center gap-1.5 transition-all cursor-pointer ${viewMode === 'table' ? 'bg-white shadow-sm font-bold text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
+              title="Visualização de Planilha"
+            >
+              <List className="w-3.5 h-3.5" /> Planilha
+            </button>
+            <button 
+              onClick={() => setViewMode('kanban')}
+              className={`px-3 py-1.5 rounded-md text-xs flex items-center gap-1.5 transition-all cursor-pointer ${viewMode === 'kanban' ? 'bg-white shadow-sm font-bold text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
+              title="Visualização de Quadro Kanban"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" /> Quadro
+            </button>
+          </div>
         </div>
+        
         <div className="flex gap-4 items-center">
           <div className="text-xs text-slate-500 font-medium">
             Ativos: <strong className="text-slate-800">{projects.length} projetos</strong>
           </div>
           <button 
             onClick={fetchProjects}
-            className="text-xs font-semibold px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-200 transition-all"
+            className="text-xs font-semibold px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-200 transition-all cursor-pointer"
           >
             Sincronizar
           </button>
@@ -300,8 +447,177 @@ export default function SolarProjectsBoard() {
         <div className="p-12 text-center bg-white rounded-xl border border-red-200 text-red-600 text-xs">
           {error}
         </div>
+      ) : viewMode === 'table' ? (
+        /* VISUALIZAÇÃO DE PLANILHA */
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-300">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/80 text-slate-500 text-[10px] uppercase tracking-[0.1em] border-b border-slate-200">
+                  <th className="px-5 py-4 font-bold">Cliente</th>
+                  <th className="px-5 py-4 font-bold">Sistema / Contrato</th>
+                  <th className="px-5 py-4 font-bold">Etapa Atual</th>
+                  <th className="px-5 py-4 font-bold">Próxima Ação</th>
+                  <th className="px-5 py-4 font-bold">Prazo Limite (SLA)</th>
+                  <th className="px-5 py-4 font-bold">Alerta</th>
+                  <th className="px-5 py-4 font-bold text-center">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs divide-y divide-slate-100">
+                {filteredProjects.map((proj) => {
+                  const hasTemp = !!tempValues[proj.id];
+                  const currentTemp = tempValues[proj.id] || {
+                    proxima_acao: proj.proxima_acao || '',
+                    data_limite_etapa: proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : ''
+                  };
+
+                  const isModified = hasTemp && (
+                    currentTemp.proxima_acao !== proj.proxima_acao ||
+                    currentTemp.data_limite_etapa !== (proj.data_limite_etapa ? proj.data_limite_etapa.substring(0, 16) : '')
+                  );
+
+                  const slaDiff = getSLADiff(proj.data_limite_etapa);
+                  const isOverdue = slaDiff?.overdue;
+                  const isUpdatingStage = !!updatingStages[proj.id];
+                  const isSavingRow = !!savingRows[proj.id];
+
+                  return (
+                    <tr 
+                      key={proj.id} 
+                      className={`transition-all hover:bg-slate-50/50 ${
+                        isOverdue 
+                          ? 'bg-red-500/[0.015] hover:bg-red-500/[0.03]' 
+                          : ''
+                      }`}
+                    >
+                      {/* Cliente */}
+                      <td className={`px-5 py-4 min-w-[200px] ${isOverdue ? 'border-l-4 border-l-red-500' : ''}`}>
+                        <div 
+                          className="font-bold text-slate-900 cursor-pointer hover:text-brand-emerald transition-all"
+                          onClick={() => handleOpenDetails(proj)}
+                        >
+                          {proj.lead?.nome}
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">{proj.lead?.localizacao}</div>
+                        <div className="text-[10px] text-slate-400 font-mono">{proj.lead?.whatsapp}</div>
+                      </td>
+
+                      {/* Sistema / Contrato */}
+                      <td className="px-5 py-4 whitespace-nowrap">
+                        {proj.lead?.sistema_kwp && (
+                          <div className="font-semibold text-slate-700 font-mono">
+                            {proj.lead.sistema_kwp} kWp
+                          </div>
+                        )}
+                        <div className="font-bold text-emerald-600 font-mono mt-0.5">
+                          R$ {proj.lead?.valor_fechado?.toLocaleString('pt-BR') || '—'}
+                        </div>
+                      </td>
+
+                      {/* Etapa Atual Dropdown */}
+                      <td className="px-5 py-4">
+                        <div className="relative min-w-[180px]">
+                          <select
+                            value={proj.etapa_atual}
+                            disabled={isUpdatingStage}
+                            onChange={(e) => handleStageChange(proj.id, e.target.value as ProjectStage)}
+                            className="w-full text-[11px] font-bold rounded-lg px-2.5 py-1.5 outline-none cursor-pointer border border-slate-200 bg-white hover:border-slate-300 text-slate-700 shadow-sm transition-all focus:border-brand-emerald disabled:opacity-55"
+                          >
+                            {COLUMNS.map(col => (
+                              <option key={col.id} value={col.id}>{col.title}</option>
+                            ))}
+                          </select>
+                          {isUpdatingStage && (
+                            <div className="absolute right-2.5 top-2.5 w-3.5 h-3.5 border-2 border-slate-200 border-t-brand-emerald rounded-full animate-spin"></div>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Próxima Ação Input */}
+                      <td className="px-5 py-4 min-w-[250px]">
+                        <input
+                          type="text"
+                          value={currentTemp.proxima_acao}
+                          onChange={(e) => handleTempChange(proj.id, 'proxima_acao', e.target.value)}
+                          className={`w-full px-2.5 py-1.5 text-[11px] border rounded-lg focus:outline-none focus:border-brand-emerald text-slate-700 font-medium ${
+                            isModified ? 'border-amber-300 bg-amber-50/10' : 'border-slate-200 bg-slate-50/30'
+                          }`}
+                          placeholder="Digite a próxima ação..."
+                        />
+                      </td>
+
+                      {/* Data Limite Input */}
+                      <td className="px-5 py-4">
+                        <input
+                          type="datetime-local"
+                          value={currentTemp.data_limite_etapa}
+                          onChange={(e) => handleTempChange(proj.id, 'data_limite_etapa', e.target.value)}
+                          className={`px-2.5 py-1.5 text-[11px] border rounded-lg focus:outline-none focus:border-brand-emerald font-semibold text-slate-700 bg-white ${
+                            isModified ? 'border-amber-300 bg-amber-50/10' : 'border-slate-200'
+                          }`}
+                        />
+                      </td>
+
+                      {/* Alerta de SLA */}
+                      <td className="px-5 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          {getSLABadgeTable(proj.data_limite_etapa)}
+                        </div>
+                      </td>
+
+                      {/* Ações */}
+                      <td className="px-5 py-4 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          {/* Botão de Salvar (apenas quando modificado) */}
+                          <button
+                            onClick={() => handleSaveRow(proj.id)}
+                            disabled={!isModified || isSavingRow}
+                            className={`p-2 rounded-lg border transition-all cursor-pointer shadow-sm ${
+                              isModified 
+                                ? 'bg-emerald-500 border-emerald-600 text-white hover:bg-emerald-600 hover:scale-105' 
+                                : 'bg-slate-50 border-slate-200 text-slate-300 cursor-not-allowed'
+                            }`}
+                            title={isModified ? "Salvar alterações desta linha" : "Sem alterações"}
+                          >
+                            {isSavingRow ? (
+                              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            ) : (
+                              <Save className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+
+                          {/* Botão Detalhes */}
+                          <button
+                            onClick={() => handleOpenDetails(proj)}
+                            className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-800 transition-all cursor-pointer shadow-sm"
+                            title="Ver histórico e notas"
+                          >
+                            <History className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Botão WhatsApp */}
+                          {proj.lead?.whatsapp && (
+                            <a
+                              href={`https://wa.me/${proj.lead.whatsapp.replace(/\D/g, '')}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all cursor-pointer shadow-sm"
+                              title="Falar no WhatsApp"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                            </a>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       ) : (
-        /* Kanban Board Horizontal Scroll */
+        /* VISUALIZAÇÃO DE QUADRO KANBAN */
         <div className="flex gap-4 overflow-x-auto pb-6 select-none -mx-4 px-4 md:-mx-8 md:px-8">
           {COLUMNS.map(col => {
             const colProjects = filteredProjects.filter(p => p.etapa_atual === col.id);
