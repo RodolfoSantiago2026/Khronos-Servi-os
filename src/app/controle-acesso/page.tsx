@@ -59,8 +59,6 @@ export default async function ControleAcessoPage() {
            </p>
          </div>
       </section>
-
-      <TrustSection data={settings?.trust} />
       
       <div className="py-12 w-full bg-white/50 dark:bg-slate-900/50 border-y border-slate-200 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -91,6 +89,7 @@ export default async function ControleAcessoPage() {
       </div>
 
       <Testimonials serviceId="controle_acesso" data={testimonialsData} />
+      <TrustSection data={settings?.trust} />
       <LeadForm defaultService={service.title} />
       <Footer />
     </main>

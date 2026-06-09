@@ -60,9 +60,6 @@ export default async function MobilidadeEletricaPage() {
            </p>
         </div>
       </section>
-
-      {/* Trust Badges section */}
-      <TrustSection data={settings?.trust} />
       
       {/* 3 Verticals Segments */}
       <section className="w-full py-16 px-4 max-w-6xl">
@@ -175,6 +172,7 @@ export default async function MobilidadeEletricaPage() {
       </div>
 
       <Testimonials serviceId="mobilidade_eletrica" data={testimonialsData} />
+      <TrustSection data={settings?.trust} />
       <LeadForm defaultService="Carregamento Veicular" />
       <Footer />
     </main>

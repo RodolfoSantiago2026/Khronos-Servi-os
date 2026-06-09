@@ -57,8 +57,8 @@ export default async function CalculadoraPage() {
         </div>
       </section>
 
-      <TrustSection data={settings?.trust} />
       <Testimonials serviceId="limpeza_solar" data={testimonialsData} />
+      <TrustSection data={settings?.trust} />
       <LeadForm defaultService="Limpeza Técnica de Placas" />
       <Footer />
     </main>
