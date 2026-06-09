@@ -56,19 +56,19 @@ export default function Header() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-xl border border-slate-200 hover:border-brand-emerald dark:border-slate-800 dark:hover:border-brand-emerald text-[10px] md:text-xs font-black uppercase tracking-wider text-slate-700 hover:text-brand-emerald dark:text-slate-350 dark:hover:text-brand-emerald transition-all duration-200 active:scale-95 shadow-sm"
+            className="hidden sm:flex items-center gap-2 px-3.5 py-2 md:px-5 md:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white text-[10px] md:text-xs font-black uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 border border-emerald-500/30"
           >
-            <Phone className="w-3.5 h-3.5 text-brand-emerald fill-brand-emerald/10" />
-            <span className="hidden md:inline">Falar com Especialista</span>
-            <span className="inline md:hidden">Falar com Especialista</span>
+            <Phone className="w-3.5 h-3.5 fill-white/10" />
+            <span>Falar com Especialista</span>
           </a>
 
           {/* Solicitar Orçamento */}
           <a
             href="#lead-form"
             onClick={handleBudgetClick}
-            className="flex items-center gap-1.5 md:gap-2 px-3 py-2 md:px-5 md:py-2.5 rounded-xl bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-200 active:scale-95 shadow-lg shadow-slate-950/10 dark:shadow-white/5"
+            className="flex items-center gap-1.5 md:gap-2 px-4 py-2.5 md:px-6 md:py-3 rounded-xl bg-gradient-to-r from-brand-orange to-brand-red text-white text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-200 active:scale-[1.03] shadow-lg shadow-brand-orange/30 hover:brightness-110 border border-white/10 relative overflow-hidden group/btn"
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-shine pointer-events-none" />
             <FileText className="w-3.5 h-3.5" />
             <span>Orçamento</span>
           </a>
