@@ -1,14 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ShieldCheck, BadgeCheck } from 'lucide-react';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import Header from '@/components/Header';
 import TrustSection from '@/components/TrustSection';
 import Testimonials from '@/components/Testimonials';
 import LeadForm from '@/components/LeadForm';
 import Footer from '@/components/Footer';
 import SolarCalculatorPortal from '@/components/SolarCalculatorPortal';
 import { getAllSiteSettingsAction } from '@/app/actions/settings';
-import KhronosLogo from '@/components/KhronosLogo';
 
 export default async function InstalacaoPage() {
   const settingsRes = await getAllSiteSettingsAction();
@@ -38,12 +37,7 @@ export default async function InstalacaoPage() {
         <div className="absolute top-[30%] right-[-10%] w-[60%] h-[60%] rounded-full bg-blue-500/10 dark:bg-blue-600/5 blur-[120px]" />
       </div>
 
-      <header className="absolute top-0 w-full px-4 py-4 md:px-8 md:py-6 flex justify-between items-center z-50">
-        <Link href="/" className="group cursor-pointer">
-          <KhronosLogo size="sm" />
-        </Link>
-        <ThemeToggle />
-      </header>
+      <Header />
 
       {/* Hero Section with Calculator */}
       <section className="w-full pt-32 pb-0 overflow-hidden relative">

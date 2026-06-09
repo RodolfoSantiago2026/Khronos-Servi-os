@@ -4,10 +4,8 @@ import ServicesCards from '@/components/ServicesCards';
 import Testimonials from '@/components/Testimonials';
 import LeadForm from '@/components/LeadForm';
 import Footer from '@/components/Footer';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import Header from '@/components/Header';
 import { getAllSiteSettingsAction } from '@/app/actions/settings';
-import KhronosLogo from '@/components/KhronosLogo';
-import Link from 'next/link';
 import InstitutionalSection from '@/components/InstitutionalSection';
 
 export default async function Home() {
@@ -23,12 +21,7 @@ export default async function Home() {
         <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-orange-500/5 dark:bg-orange-500/5 blur-[100px]" />
       </div>
       
-      <header className="absolute top-0 w-full px-6 py-6 md:px-12 md:py-8 flex justify-between items-center z-50">
-        <Link href="/" className="group cursor-pointer">
-          <KhronosLogo size="md" />
-        </Link>
-        <ThemeToggle />
-      </header>
+      <Header />
 
       {/* Hero & Services Section - Sidebar Layout */}
       <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row items-start justify-between pt-32 pb-20 px-6 md:px-12 gap-16 lg:gap-20">
