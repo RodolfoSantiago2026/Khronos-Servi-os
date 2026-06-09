@@ -80,12 +80,12 @@ export default async function MobilidadeEletricaPage() {
               </div>
               <h3 className="text-lg font-bold uppercase text-brand-navy dark:text-white mb-3 tracking-tight">Residências e Casas</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">
-                Carregamento ultra rápido no conforto da sua garagem. Oferecemos integração total com o sistema de <strong>energia solar</strong> existente para que o combustível do seu carro custe literalmente R$ 0.
+                Tenha a conveniência de abastecer seu veículo elétrico todas as noites com segurança máxima e alta velocidade. Oferecemos integração inteligente com o seu sistema de <strong>Energia Solar</strong>, permitindo que você carregue seu veículo utilizando energia 100% limpa e com custo zero de combustível.
               </p>
             </div>
-            <div className="text-xs font-bold text-brand-emerald flex items-center gap-1">
-              • Recarga de 7.4 kW a 22 kW <br />
-              • Proteção elétrica completa integrada
+            <div className="text-xs font-bold text-brand-emerald flex flex-col gap-1 mt-4">
+              <span>• Recarga rápida e inteligente (7.4 kW a 22 kW)</span>
+              <span>• Integração com geração fotovoltaica residencial</span>
             </div>
           </div>
 
@@ -97,12 +97,12 @@ export default async function MobilidadeEletricaPage() {
               </div>
               <h3 className="text-lg font-bold uppercase text-brand-navy dark:text-white mb-3 tracking-tight">Condomínios Verticais</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">
-                Gestão coletiva inteligente. Implementamos carregadores com controle de acesso via <strong>RFID/App</strong>, divisão e rateio de custos de energia por usuário e controle dinâmico para evitar picos de demanda.
+                A solução completa para condomínios residenciais e comerciais. Desenvolvemos a infraestrutura coletiva planejada com sistema de <strong>Smart Charging</strong> (gerenciamento dinâmico que evita picos de sobrecarga na rede do prédio) e controle de acesso via RFID ou aplicativo, automatizando a cobrança de forma 100% individualizada.
               </p>
             </div>
-            <div className="text-xs font-bold text-brand-emerald flex items-center gap-1">
-              • Rateio de energia automatizado <br />
-              • Smart Charging (gestão de carga)
+            <div className="text-xs font-bold text-brand-emerald flex flex-col gap-1 mt-4">
+              <span>• Gestão de rateio e cobrança automática por usuário</span>
+              <span>• Balanceamento dinâmico de carga contra quedas</span>
             </div>
           </div>
 
@@ -114,12 +114,12 @@ export default async function MobilidadeEletricaPage() {
               </div>
               <h3 className="text-lg font-bold uppercase text-brand-navy dark:text-white mb-3 tracking-tight">Vagas de Garagem Individuais</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">
-                Desenvolvemos o projeto de infraestrutura elétrica ligando o carregador diretamente ao medidor do seu respectivo apartamento, garantindo que o consumo seja cobrado direto na sua fatura da concessionária.
+                Projete e execute a instalação do seu carregador individual interligado diretamente ao medidor do seu próprio apartamento. Cuidamos de toda a infraestrutura física, cabeamento de proteção blindado e processo de <strong>homologação junto à concessionária de energia</strong>, valorizando o seu imóvel sem impactar os vizinhos.
               </p>
             </div>
-            <div className="text-xs font-bold text-brand-emerald flex items-center gap-1">
-              • Ligação direta ao relógio do apto <br />
-              • Homologação técnica garantida
+            <div className="text-xs font-bold text-brand-emerald flex flex-col gap-1 mt-4">
+              <span>• Conexão dedicada ligada ao relógio da sua unidade</span>
+              <span>• Homologação completa com engenharia credenciada</span>
             </div>
           </div>
         </div>
@@ -161,10 +161,10 @@ export default async function MobilidadeEletricaPage() {
             {/* Safety details - Crucial for EV */}
             <div className="pt-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-3">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-orange flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5" /> Segurança e Normas Técnicas
+                <Shield className="w-3.5 h-3.5" /> Segurança Absoluta e Normas Técnicas
               </span>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                Carregadores de veículos elétricos operam com alta corrente constante por longos períodos. Nossas instalações seguem rigorosamente a <strong>NBR 5410</strong>, equipadas com <strong>Dispositivo DR Tipo B</strong> (indispensável para correntes contínuas residuais), disjuntores dedicados e proteção contra surtos (DPS).
+                Veículos elétricos demandam alta corrente de forma contínua por várias horas. Para prevenir riscos de sobreaquecimento, nossas instalações atendem estritamente às normas <strong>NBR 5410</strong> e <strong>NBR 17019</strong>. Utilizamos exclusivamente <strong>Dispositivos DR Tipo B</strong> (essenciais para detectar fugas de corrente contínuas residuais de EVs), disjuntores adequados, proteção contra surtos (DPS) e eletrodutos metálicos de alta resistência.
               </p>
             </div>
           </div>
