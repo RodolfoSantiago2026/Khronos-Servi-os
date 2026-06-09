@@ -35,6 +35,13 @@ export const servicesConfig = [
     href: '/controle-acesso'
   },
   {
+    id: 'mobilidade_eletrica',
+    title: 'Carregamento Veicular',
+    image: '/images/carregamento_ev.png',
+    icon: 'Zap',
+    href: '/mobilidade-eletrica'
+  },
+  {
     id: 'ar_condicionado',
     title: 'Instalação e Manutenção de Ar Condicionado',
     image: '/images/ar_condicionado.png',

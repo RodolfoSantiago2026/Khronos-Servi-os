@@ -120,6 +120,23 @@ const DEFAULT_SERVICES = [
     hidden: false
   },
   {
+    id: 'mobilidade_eletrica',
+    title: 'Carregamento Veicular',
+    image: '/images/carregamento_ev.png',
+    icon: 'Zap',
+    href: '/mobilidade-eletrica',
+    description: 'Instalação e homologação de carregadores veiculares inteligentes para condomínios, apartamentos e residências.',
+    subpage_image: '/images/carregamento_ev.png',
+    differentials_title: 'Diferenciais do Serviço:',
+    differentials: [
+      'Projetos de infraestrutura aprovados na concessionária',
+      'Carregadores inteligentes com balanceamento dinâmico de carga',
+      'Gestão de rateio e cobrança individual por aplicativo',
+      'Instalação 100% segura com engenharia especializada Khronos'
+    ],
+    hidden: false
+  },
+  {
     id: 'ar_condicionado',
     title: 'Instalação e Manutenção de Ar Condicionado',
     image: '/images/ar_condicionado.png',
@@ -732,6 +749,7 @@ export default function AdminCMS() {
                           <option value="automacao_residencial">Automação Residencial</option>
                           <option value="aquecimento_piso">Aquecimento de Piso Premium</option>
                           <option value="controle_acesso">Controle de Acesso</option>
+                          <option value="mobilidade_eletrica">Carregamento Veicular</option>
                           <option value="ar_condicionado">Ar Condicionado</option>
                         </select>
                         
