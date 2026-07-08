@@ -35,6 +35,16 @@ const timeAgo = (dateStr: string) => {
   return `Há ${Math.floor(diffInSeconds / 86400)} dias`;
 };
 
+// Função para formatar WhatsApp com DDI se necessário
+const formatWhatsApp = (phone: string) => {
+  if (!phone) return '';
+  const cleaned = phone.replace(/\D/g, '');
+  if ((cleaned.length === 10 || cleaned.length === 11) && !cleaned.startsWith('55')) {
+    return '55' + cleaned;
+  }
+  return cleaned;
+};
+
 function DashboardContent() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'dashboard';
@@ -698,7 +708,7 @@ function DashboardContent() {
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <a 
-                              href={`https://wa.me/${lead.whatsapp.replace(/\D/g, '')}`} 
+                              href={`https://wa.me/${formatWhatsApp(lead.whatsapp)}`} 
                               target="_blank" 
                               rel="noreferrer"
                               className="p-2 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
@@ -756,7 +766,7 @@ function DashboardContent() {
                               </p>
                             </div>
                           ) : (
-                            <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="text-emerald-500 hover:text-emerald-600 bg-emerald-50 hover:bg-emerald-100 p-1.5 rounded-full transition-all" onClick={(e) => e.stopPropagation()}>
+                            <a href={`https://wa.me/${formatWhatsApp(lead.whatsapp)}`} target="_blank" rel="noreferrer" className="text-emerald-500 hover:text-emerald-600 bg-emerald-50 hover:bg-emerald-100 p-1.5 rounded-full transition-all" onClick={(e) => e.stopPropagation()}>
                               <MessageCircle className="w-3.5 h-3.5" />
                             </a>
                           )}

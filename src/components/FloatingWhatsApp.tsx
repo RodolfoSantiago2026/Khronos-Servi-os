@@ -33,7 +33,11 @@ export default function FloatingWhatsApp() {
   }, []);
 
   const whatsappMessage = 'Olá! Gostaria de tirar algumas dúvidas sobre as soluções do Grupo Khronos.';
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+  const cleanedPhone = whatsappNumber.replace(/\D/g, '');
+  const formattedPhone = (cleanedPhone.length === 10 || cleanedPhone.length === 11) && !cleanedPhone.startsWith('55')
+    ? `55${cleanedPhone}`
+    : cleanedPhone;
+  const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 pointer-events-none">

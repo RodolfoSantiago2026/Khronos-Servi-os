@@ -57,6 +57,16 @@ const COLUMNS: { id: ProjectStage; title: string; icon: any; color: string; hove
   { id: 'startup_pos_venda',         title: 'Startup & Pós-venda',        icon: Sun,           color: 'border-t-green-600 bg-green-600/5',   hoverColor: 'hover:bg-green-600/10'   },
 ];
 
+// Helper para formatar o número do WhatsApp com DDI
+const formatWhatsApp = (phone: string) => {
+  if (!phone) return '';
+  const cleaned = phone.replace(/\D/g, '');
+  if ((cleaned.length === 10 || cleaned.length === 11) && !cleaned.startsWith('55')) {
+    return '55' + cleaned;
+  }
+  return cleaned;
+};
+
 // ─── Badge de Status Financeiro ───────────────────────────────────────────────
 function FinanceiroBadge({ value }: { value?: StatusFinanceiro | string }) {
   if (!value) return (
@@ -693,7 +703,7 @@ export default function SolarProjectsBoard() {
                           {/* Botão WhatsApp */}
                           {proj.lead?.whatsapp && (
                             <a
-                              href={`https://wa.me/${proj.lead.whatsapp.replace(/\D/g, '')}`}
+                              href={`https://wa.me/${formatWhatsApp(proj.lead.whatsapp)}`}
                               target="_blank"
                               rel="noreferrer"
                               className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all cursor-pointer shadow-sm"
@@ -945,7 +955,7 @@ export default function SolarProjectsBoard() {
                     Você pode iniciar um diálogo com o cliente diretamente no WhatsApp sobre esta etapa da obra.
                   </p>
                   <a
-                    href={`https://wa.me/${selectedProject.lead?.whatsapp?.replace(/\D/g, '')}`}
+                    href={`https://wa.me/${formatWhatsApp(selectedProject.lead?.whatsapp || '')}`}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 text-emerald-600 font-bold text-xs rounded-lg transition-all"

@@ -90,7 +90,11 @@ export default function LeadForm({ defaultService }: LeadFormProps) {
       }
 
       const mensagem = `Olá! Meu nome é ${formData.nome}. Gostaria de solicitar uma análise técnica gratuita para ${formData.servico} em ${formData.localizacao}.`;
-      const url = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}`;
+      const cleanedPhone = numeroDestino.replace(/\D/g, '');
+      const formattedPhone = (cleanedPhone.length === 10 || cleanedPhone.length === 11) && !cleanedPhone.startsWith('55')
+        ? `55${cleanedPhone}`
+        : cleanedPhone;
+      const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(mensagem)}`;
       setTimeout(() => window.open(url, '_blank'), 1500);
       
     } catch (err: any) {

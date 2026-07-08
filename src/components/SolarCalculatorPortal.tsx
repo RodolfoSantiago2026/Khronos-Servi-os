@@ -90,7 +90,11 @@ export default function SolarCalculatorPortal() {
       console.error('Erro ao buscar whatsapp do CMS na calculadora:', err);
     }
     const msg = `Olá! Fiz uma simulação na Khronos e meu potencial de economia solar é de *${fmt(result.economiaA)}/ano* com um sistema de *${result.potencia} kWp*. Quero saber mais!`;
-    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, '_blank');
+    const cleanedPhone = numero.replace(/\D/g, '');
+    const formattedPhone = (cleanedPhone.length === 10 || cleanedPhone.length === 11) && !cleanedPhone.startsWith('55')
+      ? `55${cleanedPhone}`
+      : cleanedPhone;
+    window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   return (

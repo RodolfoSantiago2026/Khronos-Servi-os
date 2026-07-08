@@ -37,7 +37,11 @@ export default function Header() {
   };
 
   const whatsappMessage = 'Olá! Gostaria de falar com um especialista sobre as soluções do Grupo Khronos.';
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+  const cleanedPhone = whatsappNumber.replace(/\D/g, '');
+  const formattedPhone = (cleanedPhone.length === 10 || cleanedPhone.length === 11) && !cleanedPhone.startsWith('55')
+    ? `55${cleanedPhone}`
+    : cleanedPhone;
+  const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <header className="sticky top-0 w-full z-50 transition-all duration-300 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/40">
